@@ -1,0 +1,306 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>基于token的多平台身份认证架构设计 | Codes Online</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/7.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">基于token的多平台身份认证架构设计</h1><a id="logo" href="/.">Codes Online</a><p class="description">_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _enjoying</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">基于token的多平台身份认证架构设计</h1><div class="post-meta">Oct 26, 2017<span> | </span><span class="category"><a href="/categories/架构/">架构</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><div class="post-content"><h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1 概述"></a>1 概述</h2><p>在存在账号体系的信息系统中，对身份的鉴定是非常重要的事情。<br>随着移动互联网时代到来，客户端的类型越来越多， 逐渐出现了 一个服务器，N个客户端的格局 。</p>
+<p><img src="/2017/10/26/token/1.png" alt=""></p>
+<p>不同的客户端产生了不同的用户使用场景，这些场景：</p>
+<ul>
+<li><p>有不同的环境安全威胁</p>
+</li>
+<li><p>不同的会话生存周期</p>
+</li>
+<li><p>不同的用户权限控制体系</p>
+</li>
+<li><p>不同级别的接口调用方式</p>
+</li>
+</ul>
+<p>综上所述，它们的身份认证方式也存在一定的区别。</p>
+<p>本文将使用一定的篇幅对这些场景进行一些分析和梳理工作。</p>
+<h2 id="2-使用场景"><a href="#2-使用场景" class="headerlink" title="2 使用场景"></a>2 使用场景</h2><p>下面是一些在IT服务常见的一些使用场景:</p>
+<ul>
+<li><p>用户在web浏览器端登录系统,使用系统服务</p>
+</li>
+<li><p>用户在手机端（Android/iOS）登录系统,使用系统服务</p>
+</li>
+<li><p>用户使用开放接口登录系统,调用系统服务</p>
+</li>
+<li><p>用户在PC处理登录状态时通过手机扫码授权手机登录（使用得比较少）</p>
+</li>
+<li><p>用户在手机处理登录状态进通过手机扫码授权PC进行登录（比较常见）</p>
+</li>
+</ul>
+<h4 id="通过对场景的细分-得到如下不同的认证token类别"><a href="#通过对场景的细分-得到如下不同的认证token类别" class="headerlink" title="通过对场景的细分,得到如下不同的认证token类别:"></a>通过对场景的细分,得到如下不同的认证token类别:</h4><h4 id="1-原始账号密码类别"><a href="#1-原始账号密码类别" class="headerlink" title="1- 原始账号密码类别"></a>1- 原始账号密码类别</h4><ul>
+<li><p>用户名和密码</p>
+</li>
+<li><p>API应用ID/KEY</p>
+</li>
+</ul>
+<h4 id="2-会话ID类别"><a href="#2-会话ID类别" class="headerlink" title="2- 会话ID类别"></a>2- 会话ID类别</h4><ul>
+<li><p>浏览器端token</p>
+</li>
+<li><p>移动端token</p>
+</li>
+<li><p>API应用token</p>
+</li>
+</ul>
+<h4 id="3-接口调用类别"><a href="#3-接口调用类别" class="headerlink" title="3- 接口调用类别"></a>3- 接口调用类别</h4><ul>
+<li>接口访问token</li>
+</ul>
+<h4 id="4-身份授权类别"><a href="#4-身份授权类别" class="headerlink" title="4- 身份授权类别"></a>4- 身份授权类别</h4><ul>
+<li>PC和移动端相互授权的token</li>
+</ul>
+<h2 id="3-token的类别"><a href="#3-token的类别" class="headerlink" title="3 token的类别"></a>3 token的类别</h2><h4 id="不同场景的token进行如下几个维度的对比"><a href="#不同场景的token进行如下几个维度的对比" class="headerlink" title="不同场景的token进行如下几个维度的对比:"></a>不同场景的token进行如下几个维度的对比:</h4><h3 id="天然属性-对比"><a href="#天然属性-对比" class="headerlink" title="天然属性 对比:"></a>天然属性 对比:</h3><h4 id="1-使用成本"><a href="#1-使用成本" class="headerlink" title="1- 使用成本"></a>1- 使用成本</h4><p>本认证方式在使用的时候,造成的不便性。比如:</p>
+<p>账号密码需要用户打开页面然后逐个键入</p>
+<p>二维码需要用户掏出手机进行扫码操作</p>
+<h4 id="2-变化成本"><a href="#2-变化成本" class="headerlink" title="2- 变化成本"></a>2- 变化成本</h4><ul>
+<li><p>本认证方式,token发生变化时,用户需要做出的相应更改的成本:</p>
+</li>
+<li><p>用户名和密码发生变化时,用户需要额外记忆和重新键入新密码</p>
+</li>
+<li><p>API应用ID/KEY发生变化时,第三方应用需要重新在代码中修改并部署</p>
+</li>
+<li><p>授权二维码发生变化时,需要用户重新打开手机应用进行扫码</p>
+</li>
+</ul>
+<h4 id="3-环境风险"><a href="#3-环境风险" class="headerlink" title="3- 环境风险"></a>3- 环境风险</h4><ul>
+<li><p>被偷窥的风险</p>
+</li>
+<li><p>被抓包的风险</p>
+</li>
+<li><p>被伪造的风险</p>
+</li>
+</ul>
+<h3 id="可调控属性-对比"><a href="#可调控属性-对比" class="headerlink" title="可调控属性 对比:"></a>可调控属性 对比:</h3><h4 id="1-使用频率"><a href="#1-使用频率" class="headerlink" title="1- 使用频率"></a>1- 使用频率</h4><ul>
+<li>在网路中传送的频率</li>
+</ul>
+<h4 id="2-有效时间"><a href="#2-有效时间" class="headerlink" title="2- 有效时间"></a>2- 有效时间</h4><ul>
+<li>此token从创建到终结的生存时间</li>
+</ul>
+<p>最终的目标:安全和影响。</p>
+<h4 id="安全和隐私性主要体现在"><a href="#安全和隐私性主要体现在" class="headerlink" title="安全和隐私性主要体现在:"></a>安全和隐私性主要体现在:</h4><ul>
+<li>token 不容易被窃取和盗用（通过对传送频率控制）</li>
+<li>token 即使被窃取,产生的影响也是可控的（通过对有效时间控制）</li>
+</ul>
+<h4 id="关于隐私及隐私破坏后的后果-有如下的基本结论"><a href="#关于隐私及隐私破坏后的后果-有如下的基本结论" class="headerlink" title="关于隐私及隐私破坏后的后果,有如下的基本结论:"></a>关于隐私及隐私破坏后的后果,有如下的基本结论:</h4><ul>
+<li><p>1- 曝光频率高的容易被截获</p>
+</li>
+<li><p>2- 生存周期长的在被截获后产生的影响更严重和深远</p>
+</li>
+</ul>
+<h4 id="遵守如下原则"><a href="#遵守如下原则" class="headerlink" title="遵守如下原则:"></a>遵守如下原则:</h4><ul>
+<li><p>1- 变化成本高的token不要轻易变化</p>
+</li>
+<li><p>2-不轻易变化的token要减少曝光频率（网络传输次数）</p>
+</li>
+<li><p>3- 曝光频率高的token的生存周期要尽量短</p>
+</li>
+</ul>
+<p>将各类token的固有特点及可控属性进行调控后, 对每个指标进行量化评分（1~5分），我们可以得到如下的对比表：</p>
+<p><img src="/2017/10/26/token/2.png" alt=""></p>
+<p><code>备注:user_name/passwd 和 app_id/app_key 是等价的效果</code></p>
+<h2 id="4-token的层级关系"><a href="#4-token的层级关系" class="headerlink" title="4 token的层级关系"></a>4 token的层级关系</h2><p>参考上一节的对比表，可以很容易对这些不同用途的token进行分层，主要可以分为4层：</p>
+<p>1- 密码层</p>
+<ul>
+<li>最传统的用户和系统之间约定的数字身份认证方式</li>
+</ul>
+<p>2- 会话层</p>
+<ul>
+<li>用户登录后的会话生命周期的会话认证</li>
+</ul>
+<p>3- 调用层</p>
+<ul>
+<li>用户在会话期间对应用程序接口的调用认证</li>
+</ul>
+<p>4- 应用层</p>
+<ul>
+<li>用户获取了接口访问调用权限后的一些场景或者身份认证应用</li>
+</ul>
+<p>token的分层图如下：</p>
+<p><img src="/2017/10/26/token/3.png" alt=""></p>
+<p>在一个多客户端的信息系统里面,这些token的产生及应用的内在联系如下:</p>
+<ul>
+<li><p>1- 用户输入用户名和用户口令进行一次性认证</p>
+</li>
+<li><p>2- 在 不同 的终端里面生成拥有 不同 生命周期的会话token</p>
+</li>
+<li><p>3- 客户端会话token从服务端交换生命周期短但曝光 频繁 的接口访问token</p>
+</li>
+<li><p>4- 会话token可以生成和刷新延长 access_token 的生存时间</p>
+</li>
+<li><p>5- access_token可以生成生存周期最短的用于授权的二维码的token</p>
+</li>
+</ul>
+<p>使用如上的架构有如下的好处：</p>
+<ul>
+<li><p>1- 良好的统一性。可以解决不同平台上认证token的生存周期的 归一化 问题</p>
+</li>
+<li><p>2- 良好的解耦性。核心接口调用服务器的认证 access_token 可以完成独立的实现和部署</p>
+</li>
+<li><p>3- 良好的层次性。不同平台的可以有完全不同的用户权限控制系统，这个控制可以在 会话层 中各平台解决掉</p>
+</li>
+</ul>
+<h4 id="4-1-账号密码"><a href="#4-1-账号密码" class="headerlink" title="4.1 账号密码"></a>4.1 账号密码</h4><p>广义的 账号/密码 有如下的呈现方式:</p>
+<ul>
+<li><p>1- 传统的注册用户名和密码</p>
+</li>
+<li><p>2- 应用程序的app_id/app_key</p>
+</li>
+</ul>
+<p>它们的特点如下：</p>
+<p>1- 会有特别的意义</p>
+<p>比如：用户自己为了方便记忆，会设置有一定含义的账号和密码。</p>
+<p>2- 不常修改</p>
+<p>账号密码对用户有特别含义，一般没有特殊情况不会愿意修改。 而app_id/app_key则会写在应用程序中，修改会意味着重新发布上线的成本</p>
+<p>3- 一旦泄露影响深远</p>
+<p>正因为不常修改，只要泄露了基本相当于用户的网络身份被泄露，而且只要没被察觉这种身份盗用就会一直存在</p>
+<p>所以在认证系统中应该尽量减少传输的机会，避免泄露。</p>
+<h4 id="4-2-客户端会话token"><a href="#4-2-客户端会话token" class="headerlink" title="4.2 客户端会话token"></a>4.2 客户端会话token</h4><p>功能：充当着session的角色，不同的客户端有不同的生命周期。</p>
+<p>使用步骤：</p>
+<p>1- 用户使用账号密码，换取会话token</p>
+<p>不同的平台的token有不同的特点。</p>
+<p>Web平台生存周期短</p>
+<p>主要原因：</p>
+<p>1- 环境安全性</p>
+<p>由于web登录环境一般很可能是公共环境，被他人盗取的风险值较大</p>
+<p>2- 输入便捷性</p>
+<p>在PC上使用键盘输入会比较便捷</p>
+<h4 id="移动端生存周期长"><a href="#移动端生存周期长" class="headerlink" title="移动端生存周期长"></a>移动端生存周期长</h4><p>主要原因：</p>
+<p>1- 环境安全性</p>
+<p>移动端平台是个人用户极其私密的平台，它人接触的机会不大</p>
+<p>2- 输入便捷性</p>
+<p>在移动端上使用手指在小屏幕上触摸输入体验差，输入成本高</p>
+<h4 id="4-3-access-token"><a href="#4-3-access-token" class="headerlink" title="4.3 access_token"></a>4.3 access_token</h4><p>功能：服务端应用程序api接口访问和调用的凭证。</p>
+<p>使用步骤：</p>
+<p>1- 使用具有较长生命周期的会话token来换取此接口访问token。</p>
+<p>其曝光频率直接和接口调用频率有关，属于高频使用的凭证。 为了照顾到隐私性，尽量减少其生命周期，即使被截取了，也不至于产生严重的后果。</p>
+<p>注意：在客户端token之下还加上一个access_token， 主要是为了让具有不同生命周期的客户端token最后在调用api的时候， 能够具有统一的认证方式。</p>
+<h4 id="4-4-pam-token"><a href="#4-4-pam-token" class="headerlink" title="4.4 pam_token"></a>4.4 pam_token</h4><p>功能：由已经登录和认证的PC端生成的二维码的原始串号（Pc Auth Mobile）。</p>
+<p>主要步骤如下：</p>
+<p>1- PC上用户已经完成认证，登录了系统</p>
+<p>2- PC端生成一组和此用户相关联的pam_token</p>
+<p>3- PC端将此pam_token的使用链接生成二维码</p>
+<p>4- 移动端扫码后，请求服务器，并和用户信息关联</p>
+<p>5- 移动端获取refresh_token(长时效的会话)</p>
+<p>6- 根据 refresh_token 获取 access_token</p>
+<p>7- 完成正常的接口调用工作</p>
+<p>备注:</p>
+<ul>
+<li><p>生存周期为2分钟,2分钟后过期删除</p>
+</li>
+<li><p>没有被使用时,每1分钟变一次</p>
+</li>
+<li><p>被使用后,立刻删除掉</p>
+</li>
+<li><p>此种认证模式一般不会被使用到</p>
+</li>
+</ul>
+<h4 id="4-5-map-token"><a href="#4-5-map-token" class="headerlink" title="4.5 map_token"></a>4.5 map_token</h4><p>功能：由已经登录的移动app来扫码认证PC端系统，并完成PC端系统的登录（Mobile Auth Pc）。</p>
+<p>主要步骤：</p>
+<p>1- 移动端完成用户身份的认证登录app</p>
+<p>2- 未登录的PC生成匿名的 map_token</p>
+<p>3- 移动端扫码后在db中生成 map_token 和用户关联（完成签名）</p>
+<p>4- db同时针对此用户生成 web_token</p>
+<p>5- PC端一直以 map_token 为参数查找此命名用户的 web_token</p>
+<p>6- PC端根据 web_token 去获取 access_token</p>
+<p>7- 后续正常的调用接口调用工作</p>
+<p>备注:</p>
+<ul>
+<li><p>生存周期为2分钟,2分钟后过期删除</p>
+</li>
+<li><p>没有被使用时,每1分钟变一次</p>
+</li>
+<li><p>被使用后,立刻删除掉</p>
+</li>
+</ul>
+<h2 id="5-小结与展望"><a href="#5-小结与展望" class="headerlink" title="5 小结与展望"></a>5 小结与展望</h2><p>本文所设计的基于token的身份认证系统，主要解决了如下的问题：</p>
+<ul>
+<li><p>1- token的分类问题</p>
+</li>
+<li><p>2- token的隐私性参数设置问题</p>
+</li>
+<li><p>3- token的使用场景问题</p>
+</li>
+<li><p>4- 不同生命周期的token分层转化关系</p>
+</li>
+</ul>
+<p>本文中提到的设计方法，在 应用层 中可以适用于且不限于如下场景中：</p>
+<ul>
+<li><p>1- 用户登录</p>
+</li>
+<li><p>2- 有时效的优惠券发放</p>
+</li>
+<li><p>3- 有时效的邀请码发放</p>
+</li>
+<li><p>4- 有时效的二维码授权</p>
+</li>
+<li><p>5- 具有时效 手机/邮件 验证码</p>
+</li>
+<li><p>6- 多个不同平台调用同一套API接口</p>
+</li>
+<li><p>7- 多个平台使用同一个身份认证中心</p>
+</li>
+</ul>
+<p>至于更多的使用场景，就需要大家去发掘了。</p>
+<p>关于如何在技术上实现不同token的生存周期问题，将在后续文章中进行介绍，敬请期待。</p>
+<hr>
+<h2 id="具备生命周期的数据的技术实现方案"><a href="#具备生命周期的数据的技术实现方案" class="headerlink" title="具备生命周期的数据的技术实现方案"></a>具备生命周期的数据的技术实现方案</h2><h3 id="1-数据生命周期"><a href="#1-数据生命周期" class="headerlink" title="1 数据生命周期"></a>1 数据生命周期</h3><p>所谓的 “数据生命周期” 是指：为数据设定一定的生存期限,过了这个时间后， 此数据就被删除掉（失效）。在进行web开发的时候,有很多需求场景是要求数据是具有一定的生命周期，比如:</p>
+<p>具有一定时效的用户登录会话</p>
+<p>邀请码系统的时效控制</p>
+<p>具有时效的二维码/短信/邮件验证系统</p>
+<p>接口调用认证的token有效期</p>
+<p>第三方授权的期限控制</p>
+<p>分享内容的时效控制</p>
+<p>记录一段时间的日志</p>
+<p>本文将以如下两种数据库特性为例子来对此功能的实现进行介绍:</p>
+<p>mongodb</p>
+<p>redis</p>
+<h3 id="2-mongodb"><a href="#2-mongodb" class="headerlink" title="2 mongodb"></a>2 mongodb</h3><h4 id="2-1-实现方法"><a href="#2-1-实现方法" class="headerlink" title="2.1 实现方法"></a>2.1 实现方法</h4><p>在mongodb中有个 TTL（Time To Live 生存时间）索引 功能:</p>
+<p>TTL索引是一种特殊索引，通过这种索引 MongoDB 会过一段时间后自动移除集合中的文档。 这对于某些类型的信息来说是一个很理想的特性，例如: 机器生成的事件数据，日志，会话信息等，这些数据都只需要在数据库中保存有限时间。</p>
+<p>如果你可以设定这个生命周期是多久他只要过了这段时间之后，它就会自动删除掉</p>
+<p>删除的周期就是一分钟左右（和mongodb服务的负载有关），mongodb后台会进行周期性地检查这些索引字段<br>在 mongodb 中的实现方式:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.ttl_log_session.createIndex( &#123; <span class="string">"lastModifiedDate"</span>: <span class="number">1</span> &#125;, &#123; <span class="attr">expireAfterSeconds</span>: <span class="number">3600</span> &#125; )</span><br></pre></td></tr></table></figure>
+<p>主要解释如下:</p>
+<p>对 ttl_log_session 合集建立索引</p>
+<p>索引字段为 lastModifiedDate</p>
+<p>索引顺序是 升序</p>
+<p>有效生存周期为 3600 秒</p>
+<p>达到的效果:<br>以 lastModifiedDate 时刻开始,经过 3600 秒之后,此文档会失效被删除掉。</p>
+<h4 id="2-2-过期时间精度"><a href="#2-2-过期时间精度" class="headerlink" title="2.2 过期时间精度"></a>2.2 过期时间精度</h4><p>删除操作的一些注意事项:</p>
+<p>TTL索引 不能 保证过期数据会被立刻删除<br>在文档过期和MongoDB从数据库中删除文档之间，可能会有延迟。</p>
+<p>删除过期数据的后台任务每隔60秒运行一次<br>在文档过期之后和后台任务运行或者结束之前，文档会依然存在于集合中（删除操作还没有完成）。</p>
+<p>删除操作的持续实际取决于您的 mongod 实例的负载<br>在两次后台任务运行的间隔间，过期数据可能会继续留在数据库中超过60秒。</p>
+<h3 id="3-redis"><a href="#3-redis" class="headerlink" title="3 redis"></a>3 redis</h3><p>redis是一个内存数据库,它具备快速IO的特点。在性能上会比Mongodb进行大幅度提升。</p>
+<h4 id="3-1-实现方式"><a href="#3-1-实现方式" class="headerlink" title="3.1 实现方式"></a>3.1 实现方式</h4><p>通过如下方式:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EXPIRE key seconds</span><br></pre></td></tr></table></figure>
+<p>为给定的key设置生存时间,当key过期时（生存时间为0）,它会被自动删除。</p>
+<p>如下是一些设置生存时间相关的基本操作:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">redis&gt; SET cache_page <span class="string">"www.google.com"</span></span><br><span class="line">OK</span><br><span class="line">redis&gt; EXPIRE cache_page 30  # 设置过期时间为 30 秒</span><br><span class="line">(integer) <span class="number">1</span></span><br><span class="line">redis&gt; TTL cache_page    # 查看剩余生存时间</span><br><span class="line">(integer) <span class="number">23</span></span><br><span class="line">redis&gt; EXPIRE cache_page 30000   # 更新过期时间</span><br><span class="line">(integer) <span class="number">1</span></span><br><span class="line">redis&gt; TTL cache_page</span><br><span class="line">(integer) <span class="number">29996</span></span><br></pre></td></tr></table></figure>
+<p>注意事项:</p>
+<ul>
+<li><p>生存时间可以通过使用 DEL 命令来删除整个 key 来移除，或者被 SET 和 GETSET 命令覆写(overwrite)</p>
+</li>
+<li><p>如果使用 RENAME 对一个 key 进行改名，那么改名后的 key 的生存时间和改名前一样</p>
+</li>
+<li><p>将一个带生存时间的 key 改名成另一个带生存时间的 another_key ，这时旧的 another_key (以及它的生存时间)会被删除，然后旧的 key 会改名为 another_key</p>
+</li>
+</ul>
+<h4 id="3-2-过期时间精度"><a href="#3-2-过期时间精度" class="headerlink" title="3.2 过期时间精度"></a>3.2 过期时间精度</h4><p>在 Redis 2.4 版本中，过期时间的延迟在 1s 之内<br>就算key已经过期，但它还是可能在过期之后一秒钟之内被访问到</p>
+<p>在新的 Redis 2.6 以后的版本中，延迟被降低到 1ms 之内</p>
+<h3 id="4-小结"><a href="#4-小结" class="headerlink" title="4 小结"></a>4 小结</h3><p>在进行web开发过程中,很多场合都需要用到数据的生命周期的功能。 关于如何实现此功能时,可以参考如下结论后再进行相应的技术选型:</p>
+<p>本文关于 <strong>“数据生命周期”</strong> 主题的主要结论如下:</p>
+<p>可以通过在web应用层上面做一些定时任务,但是那样的效率远没有直接在数据库层做操作要效率高</p>
+<p>内存数据库（Reids）在过期时间精度上面的控制要远比磁盘数据库（MongoDB）要强得多,可能达到6万倍<br>在进行技术选型时注意在如下几个特性上进行比较：</p>
+<ul>
+<li><p>1- IO速度</p>
+</li>
+<li><p>2- 数据持久化</p>
+</li>
+<li><p>3- 数据的备份和复制集</p>
+</li>
+<li><p>4- 数据库对多核心的利用</p>
+</li>
+<li><p>5- 数据库集群的部署的成本和难度</p>
+</li>
+<li><p>6- 开发的成本和难度</p>
+</li>
+</ul>
+<p>最终能够得出合适自己的技术方案，实现自己系统的功能。</p>
+<p>来源：<a href="http://www.cnblogs.com/beer/p/6029861.html" target="_blank" rel="external">http://www.cnblogs.com/beer/p/6029861.html</a></p>
+</div><div class="tags"></div><div class="post-nav"><a href="/2017/10/26/saas/" class="pre">云计算之PaaS，IaaS，SaaS</a><a href="/2017/10/24/im/" class="next">简述移动端IM开发的那些坑：架构设计、通信协议和客户端</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Cloud/">Spring Cloud</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web/">Web</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/安全/">安全</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/架构/">架构</a><span class="category-list-count">11</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="http://weishu.me/" title="维术" target="_blank">维术</a><ul></ul><a href="http://zhixinliu.com/" title="Zhixin Liu" target="_blank">Zhixin Liu</a><ul></ul><a href="http://www.ruanyifeng.com/" title="阮一峰" target="_blank">阮一峰</a><ul></ul><a href="https://www.tianmaying.com/user/luoruici" title="Ricky" target="_blank">Ricky</a><ul></ul><a href="http://jeffdeng.me/" title="荒于嬉" target="_blank">荒于嬉</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2017 <a href="/." rel="nofollow">Codes Online.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
