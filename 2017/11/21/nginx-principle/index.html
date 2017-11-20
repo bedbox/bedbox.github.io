@@ -1,0 +1,129 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Nginx快速入门之基本原理篇 | Codes Online</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/7.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Nginx快速入门之基本原理篇</h1><a id="logo" href="/.">Codes Online</a><p class="description">_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _enjoying</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Nginx快速入门之基本原理篇</h1><div class="post-meta">Nov 21, 2017<span> | </span><span class="category"><a href="/categories/环境搭建/">环境搭建</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><div class="post-content"><p><a href="https://zhuanlan.zhihu.com/p/31202053" target="_blank" rel="external">Nginx快速入门之配置篇</a></p>
+<p><img src="/2017/11/21/nginx-principle/1.png" alt=""></p>
+<h3 id="Nginx-主要特点"><a href="#Nginx-主要特点" class="headerlink" title="Nginx 主要特点"></a>Nginx 主要特点</h3><h4 id="nginx模块结构："><a href="#nginx模块结构：" class="headerlink" title="nginx模块结构："></a>nginx模块结构：</h4><p><img src="/2017/11/21/nginx-principle/2.jpg" alt=""></p>
+<ul>
+<li><p>Nginx主要是用于Http服务器，反向代理服务器，邮件服务器</p>
+</li>
+<li><p>Nginx由多个模块组成，每个请求的完成都是由一个或多个模块共同完成的</p>
+</li>
+<li><p>Nginx 默认采用守护模式启动，守护模式让master进程启动后在后台运行</p>
+</li>
+<li><p>在Nginx运行期间主要由一个master主进程和多个worker进程（数目一般与cpu数目相同）</p>
+</li>
+</ul>
+<h4 id="master主进程主要是管理worker进程，对网络事件进行收集和分发："><a href="#master主进程主要是管理worker进程，对网络事件进行收集和分发：" class="headerlink" title="master主进程主要是管理worker进程，对网络事件进行收集和分发："></a>master主进程主要是管理worker进程，对网络事件进行收集和分发：</h4><ul>
+<li><p>接收来自外界的信号</p>
+</li>
+<li><p>向各worker进程发送信号</p>
+</li>
+<li><p>监控worker进程的运行状态，当worker进程退出后(异常情况下)，会自动重新启动新的worker进程</p>
+</li>
+</ul>
+<h4 id="nginx用一个独立的worker进程来处理一个请求，一个worker进程可以处理多个请求："><a href="#nginx用一个独立的worker进程来处理一个请求，一个worker进程可以处理多个请求：" class="headerlink" title="nginx用一个独立的worker进程来处理一个请求，一个worker进程可以处理多个请求："></a>nginx用一个独立的worker进程来处理一个请求，一个worker进程可以处理多个请求：</h4><ul>
+<li><p>当一个worker进程在accept这个连接之后，就开始读取请求，解析请求，处理请求，产生数据后，再返回给客户端，最后才断开连接。</p>
+</li>
+<li><p>一个请求，完全由worker进程来处理，而且只在一个worker进程中处理。采用这种方式的好处：</p>
+<ul>
+<li><p>节省锁带来的开销。对于每个worker进程来说，独立的进程，不需要加锁，所以省掉了锁带来的开销，同时在编程以及问题查上时，也会方便很多</p>
+</li>
+<li><p>独立进程，减少风险。</p>
+</li>
+<li><p>采用独立的进程，可以让互相之间不会影响，一个进程退出后，其它进程还在工作，服务不会中断，master进程则很快重新启动新的worker进程。</p>
+</li>
+<li><p>在一次请求里无需进程切换</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2017/11/21/nginx-principle/3.jpg" alt=""></p>
+<ul>
+<li><p>Nginx主要通过加锁来解决惊群现象</p>
+<ul>
+<li><p>惊群现象：惊群效应就是当一个fd的事件被触发时，所有等待这个fd的线程或进程都被唤醒。一般都是socket的accept()会导致惊群，很多个进程都block在server socket的accept()，一但有客户端进来，所有进程的accept()都会返回，但是只有一个进程会读到数据，就是惊群。</p>
+</li>
+<li><p>Nginx 采用accept-mutex来解决惊群问题：当一个请求到达的时候，只有竞争到锁的worker进程才会惊醒处理请求，其他进程会继续等待，结合 timer_solution 配置的最大的超时时间继续尝试获取accept-mutex</p>
+</li>
+</ul>
+</li>
+<li><p>Nginx的IO通常使用epoll，epoll函数使用了I/O复用模型。与I/O阻塞模型比较，I/O复用模型的优势在于可以同时等待多个（而不只是一个）套接字描述符就绪。Nginx的epoll工作流程如下：</p>
+<ul>
+<li><p>master进程先建好需要listen的socket后，然后再fork出多个woker进程，这样每个work进程都可以去accept这个socket</p>
+</li>
+<li><p>当一个client连接到来时，所有accept的work进程都会受到通知，但只有一个进程可以accept成功，其它的则会accept失败，Nginx提供了一把共享锁accept_mutex来保证同一时刻只有一个work进程在accept连接，从而解决惊群问题</p>
+</li>
+<li><p>当一个worker进程accept这个连接后，就开始读取请求，解析请求，处理请求，产生数据后，再返回给客户端，最后才断开连接，这样一个完成的请求就结束了</p>
+</li>
+</ul>
+</li>
+<li><p>Nginx最大连接数：</p>
+<ul>
+<li><p>worker_processes：worker角色的进程个数</p>
+</li>
+<li><p>worker_connections：每一个worker进程能并发处理（发起）的最大连接数（包含所有连接数）</p>
+</li>
+<li><p>Nginx作为http服务器的时候：max_clients = worker_processes * worker_connections</p>
+</li>
+<li><p>Nginx作为反向代理服务器的时候：max_clients = worker_processes * worker_connections/4 （/4原因：因为浏览器默认会开启2个连接到nginx server，而且nginx还会为每个连接使用fds（file descriptor）从连接池建立connection到upstream后端。）</p>
+</li>
+</ul>
+</li>
+<li><p>Nginx主要通过nginx.conf文件进行配置使用。在nginx.conf文件中主要分为：</p>
+<ul>
+<li><p>全局块：一些全局的属性，在运行时与具体业务功能（比如http服务或者email服务代理）无关的一些参数，比如工作进程数，运行的身份等</p>
+</li>
+<li><p>event块：参考事件模型，单个进程最大连接数等</p>
+</li>
+<li><p>http块：设定http服务器</p>
+</li>
+<li><p>server块：配置虚拟主机</p>
+</li>
+<li><p>location块：配置请求路由及页面的处理情况等</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Nginx-常用功能"><a href="#Nginx-常用功能" class="headerlink" title="Nginx 常用功能"></a>Nginx 常用功能</h3><ul>
+<li>Nginx支持FastCGI、SSL、Virtual Host、URL Rewrite、Gzip等功能。并且支持很多第三方的模块扩展。</li>
+</ul>
+<h4 id="Nginx作为Http代理、反向代理："><a href="#Nginx作为Http代理、反向代理：" class="headerlink" title="Nginx作为Http代理、反向代理："></a>Nginx作为Http代理、反向代理：</h4><ul>
+<li><p>Nginx通过配置实现灵活的转发功能：Nginx可以根据不同的正则匹配，采取不同的转发策略。</p>
+</li>
+<li><p>Nginx可以对返回结果进行错误页跳转，异常判断等。</p>
+</li>
+<li><p>如果被分发的服务器存在异常，它可以将请求重新转发给另外一台服务器，然后自动去除异常服务器。</p>
+</li>
+</ul>
+<p><img src="/2017/11/21/nginx-principle/4.jpg" alt=""></p>
+<h4 id="Nginx作为负载均衡器："><a href="#Nginx作为负载均衡器：" class="headerlink" title="Nginx作为负载均衡器："></a>Nginx作为负载均衡器：</h4><ul>
+<li><p>Nginx提供的负载均衡策略有2种：内置策略和扩展策略。</p>
+</li>
+<li><p>内置策略为轮询，加权轮询，Ip hash。</p>
+</li>
+<li><p>扩展策略由第三方实现。</p>
+</li>
+<li><p>轮询与加权轮询：</p>
+</li>
+</ul>
+<p><img src="/2017/11/21/nginx-principle/5.jpg" alt=""></p>
+<ul>
+<li>Ip hash算法，对客户端请求的ip进行hash操作，然后根据hash结果将同一个客户端ip的请求分发给同一台服务器进行处理，可以解决session不共享的问题。</li>
+</ul>
+<p><img src="/2017/11/21/nginx-principle/6.jpg" alt=""></p>
+<h4 id="Nginx作为Web缓存"><a href="#Nginx作为Web缓存" class="headerlink" title="Nginx作为Web缓存"></a>Nginx作为Web缓存</h4><ul>
+<li><p>可以把静态资源放在Nginx服务器上（比如前端页面资源）</p>
+</li>
+<li><p>Nginx可以对不同的文件做不同的缓存处理，配置灵活。</p>
+</li>
+<li><p>配合着第三方的ngx_cache_purge，对指定的URL缓存内容可以的进行增删管理。</p>
+</li>
+</ul>
+<h3 id="Nginx-基本使用"><a href="#Nginx-基本使用" class="headerlink" title="Nginx 基本使用"></a>Nginx 基本使用</h3><p>1、安装Nginx：（安装教程网上很多，这里就不展开了）</p>
+<p>2、配置Nginx：修改nginx.conf文件</p>
+<p>3、使用Nginx命令启动Nginx：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">sudo nginx 启动Nginx</span><br><span class="line"></span><br><span class="line">nginx -s stop 快速关闭Nginx，可能不保存相关信息，并迅速终止web服务。</span><br><span class="line"></span><br><span class="line">nginx -s quit 平稳关闭Nginx，保存相关信息，有安排的结束web服务。</span><br><span class="line"></span><br><span class="line">nginx -s reload 因改变了Nginx相关配置，需要重新加载配置而重载。</span><br><span class="line"></span><br><span class="line">nginx -s reopen 重新打开日志文件。</span><br><span class="line"></span><br><span class="line">nginx -c filename 为 Nginx 指定一个配置文件，来代替缺省的。</span><br><span class="line"></span><br><span class="line">nginx -t 不运行，而仅仅测试配置文件。Nginx 将检查配置文件的语法的正确性，并尝试打开配置文件中所引用到的文件。</span><br><span class="line"></span><br><span class="line">nginx -v 显示 Nginx 的版本。</span><br><span class="line"></span><br><span class="line">nginx -V 显示 Nginx 的版本，编译器版本和配置参数。</span><br><span class="line"></span><br><span class="line">-s：把信号发给Nginx的master进程</span><br></pre></td></tr></table></figure>
+<h4 id="参考资源："><a href="#参考资源：" class="headerlink" title="参考资源："></a>参考资源：</h4><p><a href="http://link.zhihu.com/?target=http%3A//www.jianshu.com/p/b77482d4b670" target="_blank" rel="external">Nginx 之实现原理</a></p>
+<p><a href="https://www.zhihu.com/question/22756773" target="_blank" rel="external">什么是惊群，如何有效避免惊群?</a></p>
+<p><a href="http://link.zhihu.com/?target=http%3A//blog.csdn.net/sole_cc/article/details/52433353" target="_blank" rel="external">nginx最大并发连接数的思考：worker_processes、worker_connections、worker_rlimit_nofile</a></p>
+<p><a href="http://link.zhihu.com/?target=http%3A//www.cnblogs.com/knowledgesea/p/5175711.html" target="_blank" rel="external">Nginx配置详解</a></p>
+<p>来源：<a href="https://zhuanlan.zhihu.com/p/31196264" target="_blank" rel="external">https://zhuanlan.zhihu.com/p/31196264</a></p>
+</div><div class="tags"></div><div class="post-nav"><a href="/2017/11/18/nginx-tomcat/" class="next">Nginx + Tomcat 实现动静分离</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Kotlin/">Kotlin</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Cloud/">Spring Cloud</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web/">Web</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/安全/">安全</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/嵌入式/">嵌入式</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/架构/">架构</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境搭建/">环境搭建</a><span class="category-list-count">3</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="http://weishu.me/" title="维术" target="_blank">维术</a><ul></ul><a href="http://zhixinliu.com/" title="Zhixin Liu" target="_blank">Zhixin Liu</a><ul></ul><a href="http://www.ruanyifeng.com/" title="阮一峰" target="_blank">阮一峰</a><ul></ul><a href="https://www.tianmaying.com/user/luoruici" title="Ricky" target="_blank">Ricky</a><ul></ul><a href="http://jeffdeng.me/" title="荒于嬉" target="_blank">荒于嬉</a><ul></ul><a href="https://kcaogen.com/blog" title="康草根" target="_blank">康草根</a><ul></ul><a href="http://13blog.site/" title="zhenfeng13" target="_blank">zhenfeng13</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2017 <a href="/." rel="nofollow">Codes Online.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
