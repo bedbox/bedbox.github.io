@@ -7,7 +7,7 @@
 <p>1-找不到相关jar包，找不到FilterXXX的类，解决办法，工程依赖项添加tomcat/lib，需要将该目录下的jsp-api.jar、servlet-api.jar拷贝到target/dubbo-monitor-simple-2.0.0-assembly.tar.gz解压后的目录lib</p>
 <p>2-如果是java 9, 可能会遇到无法识别某些将被放弃的api和参数，所以把jdk改为1.8可解决，执行start.sh可能会出现内存不足<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">JAVA_MEM_OPTS=<span class="string">" -server -Xmx2g -Xms2g -Xmn256m -XX:PermSize=128m -Xss256k -XX:+DisableExplicitGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -XX:+UseCMSCompactAtFullCollection -XX:LargePageSizeInBytes=128m -XX:+UseFastAccessorMethods -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=70 "</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    JAVA_MEM_OPTS=<span class="string">" -server -Xms1g -Xmx1g -XX:PermSize=128m -XX:SurvivorRatio=2 -XX:+UseParallelGC "</span></span><br></pre></td></tr></table></figure></p>
 <p>其中<code>-server -Xmx2g -Xms2g -Xmn256m</code>2g改为512m即可</p>
-<h4 id="安装dubbo-admin"><a href="#安装dubbo-admin" class="headerlink" title="安装dubbo-admin"></a>安装dubbo-admin</h4><p>通monitor一个工程</p>
+<h4 id="安装dubbo-admin"><a href="#安装dubbo-admin" class="headerlink" title="安装dubbo-admin"></a>安装dubbo-admin</h4><p>同monitor一个工程</p>
 <p>部署时候遇到端口被占用，这个好解决，还遇到某些api和参数执行错误，导致tomcat无法开启，所以要tomcat使用的jdk为1.8版本，之前用9，所以一直失败，其他版本没去试过</p>
 <h4 id="搭建dubbo工程"><a href="#搭建dubbo工程" class="headerlink" title="搭建dubbo工程"></a>搭建dubbo工程</h4><p>至此可以开始搭建业务框架，基于雏形框架，逐步完善优化，dubbo比想象中的强大，还有好多特性需要去挖掘</p>
 <p>官网 <a href="http://wwww.dubbo.io" target="_blank" rel="external">http://wwww.dubbo.io</a></p>
