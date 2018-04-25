@@ -26,7 +26,7 @@
 <p>待监听的事件由events成员指定，函数在相应的revents成员中返回该描述符的状态（每个文件描述符都有两个事件，一个是传入型的events，一个是传出型的revents，从而避免使用传入传出型参数，注意与select的区别），从而告知应用程序fd上实际发生了哪些事件。events和revents都可以是多个事件的按位或。</p>
 <p>2）第二个参数是要监听的文件描述符的个数，也就是数组fds的元素个数；</p>
 <p>3）第三个参数意义与select相同。</p>
-<p>4、poll的事件类型：<br><img src="/2017/09/28/linux-io/3.jpg" alt=""><br>这里写图片描述</p>
+<p>4、poll的事件类型：<br><img src="/2017/09/28/linux-io/2.jpg" alt=""><br>这里写图片描述</p>
 <p>在使用POLLRDHUP时，要在代码开始处定义_GNU_SOURCE</p>
 <p>5、poll的返回情况：</p>
 <p>与select相同。</p>
