@@ -499,6 +499,230 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://51codes.top/2017/11/02/vue-project/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Codes Online">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/11/02/vue-project/" itemprop="url">
+                  基于vue的全家桶小项目
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-11-02 23:47:44" itemprop="dateCreated datePublished" datetime="2017-11-02T23:47:44+08:00">2017-11-02</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2017-11-11 20:16:15" itemprop="dateModified" datetime="2017-11-11T20:16:15+08:00">2017-11-11</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Node-js/" itemprop="url" rel="index"><span itemprop="name">Node.js</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="vn-pastime"><a href="#vn-pastime" class="headerlink" title="vn-pastime"></a>vn-pastime</h3><p>基于vue全家桶、mongodb和nodejs的全栈项目,其实是个大杂烩。通过这个项目，了解前后端的整合，以及产品上线的基本流程</p>
+<p>前端使用axios与后台api交互获取数据，vue全家桶进行数据的管理和渲染，mongodb存储网上爬取的原始数据以及用户后期产生的数据，nodejs主要提供api接口以及token的签发与验证</p>
+<p>线上使用阿里云服务器部署，nginx进行http反向代理，pm2管理Node应用的进程</p>
+<p>线上地址： <a href="http://www.xxxuthus.cn" target="_blank" rel="external">http://www.xxxuthus.cn</a></p>
+<p>仓库地址: <a href="https://github.com/xxxgitone/vue-node-pastime" target="_blank" rel="external">https://github.com/xxxgitone/vue-node-pastime</a></p>
+<h3 id="功能介绍"><a href="#功能介绍" class="headerlink" title="功能介绍"></a>功能介绍</h3><p>这个项目本身并不复杂，最主要的是清扫了一些后台的盲区，满足了自己的好奇心，特别是在项目部署这一块。虽然还没有达到熟悉的地步，但提起也不至于什么也不知道。</p>
+<p>后期将会优化前端的代码，比如代码的结构和书写规范，以及vue的组件规范，还有响应式的实现，也可能会添加一些新的模块。</p>
+<p>主要目录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">├── app.js   // 后台入口</span><br><span class="line">├── index.html</span><br><span class="line">├── server  // 服务端文件</span><br><span class="line">│   ├── api  // api借口</span><br><span class="line">│   ├── middlewares</span><br><span class="line">│   │   └── jwtMid.js  // token验证中间件</span><br><span class="line">│   ├── models  // mongodb的文档模型</span><br><span class="line">│   └── public</span><br><span class="line">├── src  // 前端主文件</span><br><span class="line">│   ├── api  // 前端api，与后台api的交互</span><br><span class="line">│   ├── App.vue</span><br><span class="line">│   ├── assets  // 静态资源</span><br><span class="line">│   │   ├── font</span><br><span class="line">│   │   ├── img</span><br><span class="line">│   │   └── scss</span><br><span class="line">│   ├── components // 单个组件</span><br><span class="line">│   ├── main.js</span><br><span class="line">│   ├── router</span><br><span class="line">│   ├── store</span><br><span class="line">│   ├── utils // axios拦截器</span><br><span class="line">│   │   └── axiosService.js</span><br><span class="line">│   └── views // 页面级组件</span><br></pre></td></tr></table></figure></p>
+<h3 id="主要功能-期待更多"><a href="#主要功能-期待更多" class="headerlink" title="主要功能(期待更多)"></a>主要功能(期待更多)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[x] 视频播放列表的展示</span><br><span class="line">[x] 视频播放器自定义样式</span><br><span class="line">[x] 视频评论功能，包括二级评论，自定义简单的富文本组件，用于评论的编辑</span><br><span class="line">[x] 基于token进行登录验证</span><br><span class="line">[x] 图片的展示列表</span><br><span class="line">[x] 图片滚动加载</span><br><span class="line">[x] 图片详情页展示，支持上下张切换以及评论</span><br><span class="line">[x] 使用socket.io进行简单聊天室</span><br><span class="line">[x] 图片上传预览</span><br></pre></td></tr></table></figure>
+<h3 id="项目总结和感想"><a href="#项目总结和感想" class="headerlink" title="项目总结和感想"></a>项目总结和感想</h3><h3 id="组件编写应该规范"><a href="#组件编写应该规范" class="headerlink" title="组件编写应该规范"></a>组件编写应该规范</h3><p>vue上手容易，可以很轻松的实现一些功能。但是要让代码变得更加容易维护和扩展，还得做点其他工作。组件编写规范化便是一个非常有效的方法，组件一般分为基础组件和业务组件，组件应该各司其职，比如基础组件就不应该包含跟业务相关的具体代码，只是返回一个信息，给引用它的组件。这样可以降低组件的耦合度，提升组件的可复用性。</p>
+<p>比如一个confirm组件</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">transition</span> <span class="attr">name</span>=<span class="string">"confirm"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"info-confirm"</span> <span class="attr">v-show</span>=<span class="string">"showFlag"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"info-header"</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">span</span>&gt;</span>提示信息<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"info-text"</span>&gt;</span></span><br><span class="line">        &#123;&#123; text &#125;&#125;</span><br><span class="line">      <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"info-button"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> @<span class="attr">click.prevent</span>=<span class="string">"confirm"</span>&gt;</span>&#123;&#123; confirmBtnText &#125;&#125;<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> @<span class="attr">click.prevent</span>=<span class="string">"cancle"</span>&gt;</span>&#123;&#123; cancleBtnText &#125;&#125;<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">transition</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="undefined">  props: &#123;</span></span><br><span class="line"><span class="undefined">    text: &#123;</span></span><br><span class="line"><span class="javascript">      type: <span class="built_in">String</span>,</span></span><br><span class="line"><span class="javascript">      <span class="keyword">default</span>: <span class="string">''</span></span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">    confirmBtnText: &#123;</span></span><br><span class="line"><span class="javascript">      type: <span class="built_in">String</span>,</span></span><br><span class="line"><span class="javascript">      <span class="keyword">default</span>: <span class="string">'确定'</span></span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">    cancleBtnText: &#123;</span></span><br><span class="line"><span class="javascript">      type: <span class="built_in">String</span>,</span></span><br><span class="line"><span class="javascript">      <span class="keyword">default</span>: <span class="string">'取消'</span></span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">  &#125;,</span></span><br><span class="line"><span class="undefined">  data () &#123;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">return</span> &#123;</span></span><br><span class="line"><span class="javascript">      showFlag: <span class="literal">false</span></span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">  &#125;,</span></span><br><span class="line"><span class="undefined">  methods: &#123;</span></span><br><span class="line"><span class="undefined">    hide () &#123;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.showFlag = <span class="literal">false</span></span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">    show () &#123;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.showFlag = <span class="literal">true</span></span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">    confirm () &#123;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.hide()</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.$emit(<span class="string">'confirm'</span>)</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">    cancle () &#123;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.hide()</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.$emit(<span class="string">'cancle'</span>)</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在点击确认后，不应该直接在这里组件里面处理接下来的逻辑（比如删除或着清空），而是应该通过this.$emit(‘confirm’)向父组件传递一个确认的信息，父组件监听这个方法，然后再处理接下来的逻辑</p>
+<p>这个项目后续将会重点围绕这点来进行优化</p>
+<h3 id="前后端如何分离"><a href="#前后端如何分离" class="headerlink" title="前后端如何分离"></a>前后端如何分离</h3><p>这是之前我最想知道的问题，听过很多前后端分离，但是都是只闻其声，不见其形。</p>
+<p>之前同学问过我这样一个问题，<strong>为什么前端也要单独起一个服务</strong>，当时我脑海里，闪过的第一个答案就是，现在前端构建项目需要依赖很多包，需要通过node环境来安装各种依赖工作，帮助我们工作。</p>
+<p>现在看来这个答案大错特错了，问的是服务，而不是node环境。其实这个问题的答案和前后端分离也和相关</p>
+<p>在传统web开发的时候，前端和后端的工作比较耦合，后端人员要做着很多前端的工作，不停切换，比如发送后台请求。这样导致前后端分工不明确，效率反而更加低。不仅如此，而且前后端还要搭建同样的开发环境，让前端开发去搭建一个Java开发环境，显得有些复杂，而且确实没必要。</p>
+<p>现代web开发，前后端各司其职，开发之前约定好数据接口和格式，就可以同时开发了。</p>
+<p>前端负责静态样式的编写，以及发送ajax请求，后台负责api的开发和测试。双方都不用管对方具体怎么实现。</p>
+<p><img src="/2017/11/02/vue-project/1.png" alt=""></p>
+<p>前面也说到过前端不应该去搭建一个复杂的Java或者其他后台服务，我们可以通过nodejs来搭建一个服务器，寥寥几行代码，便可快速搭建，搭建nodejs服务器的好处</p>
+<ul>
+<li><p>可以模拟线上环境，毕竟本地静态文件和线上还是有些差别，比如路径等</p>
+</li>
+<li><p>发送ajax，还要处理跨域</p>
+</li>
+<li><p>部署线上，中间层，用于加载静态文件</p>
+</li>
+</ul>
+<h3 id="前后端如何部署"><a href="#前后端如何部署" class="headerlink" title="前后端如何部署"></a>前后端如何部署</h3><p>在前后端完全分离的情况下，前端和后端当然是分别部署(本案例由于是自己一个人写的，并且后台语言正好是nodejs，所以没有将前后端分别部署），比如www.xxxuthus.cn， 那么后台api可以使用一个二级域名 api.xxxuthus.cn</p>
+<p>前端部署，nodejs为一个中间层，作为静态文件服务器，比如将webpack打包后的dist作为静态资源</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">'express'</span>)</span><br><span class="line"><span class="keyword">const</span> env = process.env.NODE_ENV || <span class="string">'development'</span></span><br><span class="line"><span class="keyword">const</span> app = express()</span><br><span class="line">app.use(express.static(<span class="string">'./dist'</span>))</span><br><span class="line"><span class="keyword">const</span> server = app.listen(<span class="number">4000</span>, () =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`Express started in <span class="subst">$&#123;app.get(<span class="string">'env'</span>)&#125;</span> mode on http://localhsot:4000`</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>使用nginx进行反向代理，当用户访问静态资源的时候，返回静态资源，当前台访问api的时候，转发到后台服务器</p>
+<p>该配置文件是该项目的，该项目没有严格按照前后端分离部署，所以其它场景配置文件仅供参考</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">  upstream xxxuthus &#123;</span><br><span class="line">  server <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">4000</span>;</span><br><span class="line">&#125;</span><br><span class="line">server &#123;</span><br><span class="line">  listen <span class="number">80</span>;</span><br><span class="line">  server_name www.xxxuthus.cn;</span><br><span class="line">  location / &#123;</span><br><span class="line">    proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">    proxy_set_header X-Forward-For $proxy_add_x_forwarded_for;</span><br><span class="line">    proxy_set_header Host $http_host;</span><br><span class="line">    proxy_set_header X-Nginx-Proxt <span class="literal">true</span>;</span><br><span class="line">    proxy_pass http:<span class="comment">//xxxuthus;</span></span><br><span class="line">    proxy_redirect off;</span><br><span class="line">  &#125;</span><br><span class="line">  location ~* ^.+\.(jpg|jpeg|gif|png|ico|css|js|pdf|txt) &#123;</span><br><span class="line">    root /www/vnpastime/production/current/dist;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2017/11/02/vue-project/2.png" alt=""></p>
+<h3 id="跨域"><a href="#跨域" class="headerlink" title="跨域"></a>跨域</h3><p>前后端分离，就会面临着跨域问题，比较常用的跨域CORS，proxy代理以及nginx反向代理</p>
+<p>在开发环境中我一般使用proxy代理的方式，通过在config/index.js下面设置</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">proxyTable: &#123;</span><br><span class="line">  <span class="string">'/api'</span>:&#123;</span><br><span class="line">    target: <span class="string">'http://localhost:4000'</span>,</span><br><span class="line">    changeOrigin: <span class="literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">'/auth'</span>:&#123;</span><br><span class="line">    target: <span class="string">'http://localhost:4000'</span>,</span><br><span class="line">    changeOrigin: <span class="literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+<p>我们前端服务为8080，当我们访问/api/**的时候，便会转发到端口为4000的服务上</p>
+<p>生产环境我使用的是nginx代理，前面已经有所介绍</p>
+<h3 id="Node-js项目部署工具pm2"><a href="#Node-js项目部署工具pm2" class="headerlink" title="Node.js项目部署工具pm2"></a>Node.js项目部署工具pm2</h3><p>pm2是node的一个进程管理器，能够保证进程永远或者，使用它部署变得相当容易</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install pm2 -g</span><br></pre></td></tr></table></figure>
+<p>配置文件，在项目根目录项新建文件ecosystem.json</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"apps"</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">"name"</span>: <span class="string">"vnpastime"</span>,</span><br><span class="line">      <span class="string">"script"</span>: <span class="string">"app.js"</span>,</span><br><span class="line">      <span class="string">"env"</span>: &#123;</span><br><span class="line">        <span class="string">"COMMON_VARIABLE"</span>: <span class="string">"true"</span></span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="string">"env_production"</span> : &#123;</span><br><span class="line">        <span class="string">"NODE_ENV"</span>: <span class="string">"production"</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  <span class="string">"deploy"</span>: &#123;</span><br><span class="line">    <span class="string">"production"</span>: &#123;</span><br><span class="line">      <span class="string">"user"</span>: <span class="string">"xuthus_y"</span>,</span><br><span class="line">      <span class="string">"host"</span>: [<span class="string">"106.14.173.2"</span>],</span><br><span class="line">      <span class="string">"port"</span>: <span class="string">"22"</span>,</span><br><span class="line">      <span class="string">"ref"</span>: <span class="string">"origin/master"</span>,</span><br><span class="line">      <span class="string">"repo"</span>: <span class="string">"git@github.com:xxxgitone/vue-node-pastime.git"</span>,</span><br><span class="line">      <span class="string">"path"</span>: <span class="string">"/www/vnpastime/production"</span>,</span><br><span class="line">      <span class="string">"ssh_options"</span>: <span class="string">"StrictHostKeyChecking=no"</span>,</span><br><span class="line">      <span class="string">"post-deploy"</span> : <span class="string">"npm install &amp;&amp; npm run build &amp;&amp; pm2 startOrRestart ecosystem.json --env production"</span>,</span><br><span class="line">      <span class="string">"env"</span>  : &#123;</span><br><span class="line">        <span class="string">"NODE_ENV"</span>: <span class="string">"production"</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将该文件push到github中，初次启动执行</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm2 deploy ecosystem.json production setup</span><br></pre></td></tr></table></figure>
+<p>然后<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm2 deploy ecosystem.json production</span><br></pre></td></tr></table></figure></p>
+<p>可以在服务器，通过pm2 list和pm2 logs分别查看部署成功的应用和部署日志</p>
+<p>以后每次修改的项目，push到github后，直接在本地通过<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm2 deploy ecosystem.json production</span><br></pre></td></tr></table></figure></p>
+<p>就可以更新线上的内容了</p>
+<p><a href="https://github.com/xxxgitone/learningProcess/blob/master/linux/%E4%BA%91%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2.md" target="_blank" rel="external">这里</a>记录了我部署过程中的一些关键步骤，可以参考</p>
+<h3 id="Build-Setup"><a href="#Build-Setup" class="headerlink" title="Build Setup"></a>Build Setup</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># clone项目</span></span><br><span class="line">git <span class="built_in">clone</span> git@github.com:xxxgitone/vue-node-pastime.git</span><br><span class="line"><span class="built_in">cd</span> vue-node-pastime</span><br><span class="line"><span class="comment"># install dependencies</span></span><br><span class="line">npm install</span><br><span class="line"><span class="comment"># 还原数据，为了方便展示，我将数据库上传到了项目中，文件名为vnpastime</span></span><br><span class="line"><span class="comment"># --host 数据库服务</span></span><br><span class="line"><span class="comment"># -d 数据库名</span></span><br><span class="line"><span class="comment"># 最后面是备份文件的路径,如果不在该目录下记得填写绝对路径</span></span><br><span class="line">mongorestore --host 127.0.0.1:27017 -d vnpastime ./vnpastime/</span><br><span class="line"><span class="comment"># 启动mongodb服务</span></span><br><span class="line">mongo</span><br><span class="line"><span class="comment"># 启动后台服务</span></span><br><span class="line">node app.js</span><br><span class="line"><span class="comment"># 再启动前台</span></span><br><span class="line">npm run dev</span><br><span class="line"><span class="comment"># build for production with minification</span></span><br><span class="line">npm run build</span><br></pre></td></tr></table></figure>
+<p>来源：<a href="https://cnodejs.org/topic/59915bd8ee602e88524b421b" target="_blank" rel="external">https://cnodejs.org/topic/59915bd8ee602e88524b421b</a></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://51codes.top/2017/11/02/uml-class/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -629,195 +853,6 @@
 <h3 id="实现（Realization）"><a href="#实现（Realization）" class="headerlink" title="实现（Realization）"></a>实现（Realization）</h3><p>实例（图I）关系UML箭头指定两个实体之间的一个合同。换言之，一个实体定义一个合同，而另一个实体保证履行该合同。对Java应用程序进行建模时，实现关系可直接用implements关键字来表示。</p>
 <p><img src="/2017/11/02/uml-class/6.jpg" alt=""><br>图I</p>
 <p>来源：<a href="http://blog.csdn.net/hewei0241/article/details/7674450" target="_blank" rel="external">http://blog.csdn.net/hewei0241/article/details/7674450</a></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://51codes.top/2017/11/02/android-custom-view/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="John Doe">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Codes Online">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/11/02/android-custom-view/" itemprop="url">
-                  Android View 绘制流程 & 自定义View
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2017-11-02 23:47:44" itemprop="dateCreated datePublished" datetime="2017-11-02T23:47:44+08:00">2017-11-02</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2017-11-11 20:04:22" itemprop="dateModified" datetime="2017-11-11T20:04:22+08:00">2017-11-11</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="View绘制流程调用链图"><a href="#View绘制流程调用链图" class="headerlink" title="View绘制流程调用链图"></a>View绘制流程调用链图</h3><p><img src="/2017/11/02/android-custom-view/1.jpg" alt=""></p>
-<p>记清楚函数调用的顺序才能准确地进行调用。</p>
-<p>根据调用链，可将整个绘制过程分为三部分：<strong>Measure - Layout - Draw</strong></p>
-<h3 id="Measure-过程"><a href="#Measure-过程" class="headerlink" title="Measure 过程"></a>Measure 过程</h3><p>测量过程由上至下，在measure过程的最后，每个视图将存储自己的尺寸大小和测量规格。</p>
-<p>measure过程会为一个View及其所有子节点的mMeasureWidth和mMeasuredHeight变量赋值， 该值可以通过getMeasuredWidth和getMeasuredHeight方法获得。</p>
-<p>measure过程的核心方法: <strong>measure() - onMeasure() - setMeasuredDimension().</strong></p>
-<p>setMeasuredDimension是测量阶段的终极方法，在onMeasure()方法中调用，将计算得到的尺寸，传递给该方法，测量阶段结束。在自定义 视图时，不需要关心系统复杂的Measure过程，只需要调用setMeasuredDimension()设置根据MeasureSpec计算得到的尺寸即可。同时, onMeasure()方法也必须调用setMeasuredDimension()方法来设置重新测量之后的</p>
-<p>以measureChildren为例的调用链图:</p>
-<p><img src="/2017/11/02/android-custom-view/2.jpg" alt=""></p>
-<h3 id="Layout-过程"><a href="#Layout-过程" class="headerlink" title="Layout 过程"></a>Layout 过程</h3><p>子视图的具体位置都是相对于父视图而言的。View的onLayout()方法为空实现，而ViewGroup的onLayout为abstract，因此，自定义的View要继承ViewGroup时，必须实现onLayout函数。</p>
-<p>在Layout过程中，子视图会调用getMeasuredWidth()和getMeasuredHeight()方法获取到measure过程得到mMeasuredWidth和mMeasuredHeight，作为自己的width和height。然后调用每一个子视图的layout()，来确定每个子视图在父视图中的位置。</p>
-<h3 id="Draw-过程"><a href="#Draw-过程" class="headerlink" title="Draw 过程"></a>Draw 过程</h3><p>所有视图最终都是调用View的draw方法进行绘制。 在自定义视图中， 也不应该复写该方法， 而是复写onDraw（）方法进行绘制， 如果自定义的视图确实要复写该方法，先调用super.draw()完成系统的绘制，再进行自定义的绘制。</p>
-<p>onDraw()方法默认是空实现，自定义绘制过程需要复写方法，绘制自身的内容。</p>
-<p>dispatchDraw()发起对子视图的绘制，在View中默认为空实现，ViewGroup复写了dispatchDraw()来对其子视图进行绘制。自定义的ViewGroup不应该对dispatchDraw()进行复写。</p>
-<h3 id="如何对自定义View进行控制"><a href="#如何对自定义View进行控制" class="headerlink" title="如何对自定义View进行控制"></a>如何对自定义View进行控制</h3><p>如果想控制View在屏幕上的渲染效果，就在重写onDraw()方法，在里面进行相应的处理。</p>
-<p>如果想要控制用户同View之间的交互操作，则在onTouchEvent()方法中对手势进行控制处理。</p>
-<p>如果想要控制View中内容在屏幕上显示的尺寸大小，就重写onMeasure()方法中进行处理。</p>
-<p>在 XML文件中设置自定义View的XML属性。</p>
-<p>如果想避免失去View的相关状态参数的话，就在onSaveInstanceState() 和 onRestoreInstanceState()方法中保存有关View的状态信息。</p>
-<p>来源：<a href="http://www.jianshu.com/p/f0bc39dbfa26" target="_blank" rel="external">http://www.jianshu.com/p/f0bc39dbfa26</a></p>
 
           
         
@@ -1064,7 +1099,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://51codes.top/2017/11/02/vue-project/">
+    <link itemprop="mainEntityOfPage" href="http://51codes.top/2017/11/02/android-custom-view/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="John Doe">
@@ -1083,8 +1118,8 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/11/02/vue-project/" itemprop="url">
-                  基于vue的全家桶小项目
+                <a class="post-title-link" href="/2017/11/02/android-custom-view/" itemprop="url">
+                  Android View 绘制流程 & 自定义View
                 </a>
               
             
@@ -1127,7 +1162,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2017-11-11 20:16:15" itemprop="dateModified" datetime="2017-11-11T20:16:15+08:00">2017-11-11</time>
+                <time title="修改时间：2017-11-11 20:04:22" itemprop="dateModified" datetime="2017-11-11T20:04:22+08:00">2017-11-11</time>
               
             
           </span>
@@ -1144,7 +1179,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Node-js/" itemprop="url" rel="index"><span itemprop="name">Node.js</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
 
                 
                 
@@ -1180,61 +1215,26 @@
       
         
           
-            <h3 id="vn-pastime"><a href="#vn-pastime" class="headerlink" title="vn-pastime"></a>vn-pastime</h3><p>基于vue全家桶、mongodb和nodejs的全栈项目,其实是个大杂烩。通过这个项目，了解前后端的整合，以及产品上线的基本流程</p>
-<p>前端使用axios与后台api交互获取数据，vue全家桶进行数据的管理和渲染，mongodb存储网上爬取的原始数据以及用户后期产生的数据，nodejs主要提供api接口以及token的签发与验证</p>
-<p>线上使用阿里云服务器部署，nginx进行http反向代理，pm2管理Node应用的进程</p>
-<p>线上地址： <a href="http://www.xxxuthus.cn" target="_blank" rel="external">http://www.xxxuthus.cn</a></p>
-<p>仓库地址: <a href="https://github.com/xxxgitone/vue-node-pastime" target="_blank" rel="external">https://github.com/xxxgitone/vue-node-pastime</a></p>
-<h3 id="功能介绍"><a href="#功能介绍" class="headerlink" title="功能介绍"></a>功能介绍</h3><p>这个项目本身并不复杂，最主要的是清扫了一些后台的盲区，满足了自己的好奇心，特别是在项目部署这一块。虽然还没有达到熟悉的地步，但提起也不至于什么也不知道。</p>
-<p>后期将会优化前端的代码，比如代码的结构和书写规范，以及vue的组件规范，还有响应式的实现，也可能会添加一些新的模块。</p>
-<p>主要目录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">├── app.js   // 后台入口</span><br><span class="line">├── index.html</span><br><span class="line">├── server  // 服务端文件</span><br><span class="line">│   ├── api  // api借口</span><br><span class="line">│   ├── middlewares</span><br><span class="line">│   │   └── jwtMid.js  // token验证中间件</span><br><span class="line">│   ├── models  // mongodb的文档模型</span><br><span class="line">│   └── public</span><br><span class="line">├── src  // 前端主文件</span><br><span class="line">│   ├── api  // 前端api，与后台api的交互</span><br><span class="line">│   ├── App.vue</span><br><span class="line">│   ├── assets  // 静态资源</span><br><span class="line">│   │   ├── font</span><br><span class="line">│   │   ├── img</span><br><span class="line">│   │   └── scss</span><br><span class="line">│   ├── components // 单个组件</span><br><span class="line">│   ├── main.js</span><br><span class="line">│   ├── router</span><br><span class="line">│   ├── store</span><br><span class="line">│   ├── utils // axios拦截器</span><br><span class="line">│   │   └── axiosService.js</span><br><span class="line">│   └── views // 页面级组件</span><br></pre></td></tr></table></figure></p>
-<h3 id="主要功能-期待更多"><a href="#主要功能-期待更多" class="headerlink" title="主要功能(期待更多)"></a>主要功能(期待更多)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[x] 视频播放列表的展示</span><br><span class="line">[x] 视频播放器自定义样式</span><br><span class="line">[x] 视频评论功能，包括二级评论，自定义简单的富文本组件，用于评论的编辑</span><br><span class="line">[x] 基于token进行登录验证</span><br><span class="line">[x] 图片的展示列表</span><br><span class="line">[x] 图片滚动加载</span><br><span class="line">[x] 图片详情页展示，支持上下张切换以及评论</span><br><span class="line">[x] 使用socket.io进行简单聊天室</span><br><span class="line">[x] 图片上传预览</span><br></pre></td></tr></table></figure>
-<h3 id="项目总结和感想"><a href="#项目总结和感想" class="headerlink" title="项目总结和感想"></a>项目总结和感想</h3><h3 id="组件编写应该规范"><a href="#组件编写应该规范" class="headerlink" title="组件编写应该规范"></a>组件编写应该规范</h3><p>vue上手容易，可以很轻松的实现一些功能。但是要让代码变得更加容易维护和扩展，还得做点其他工作。组件编写规范化便是一个非常有效的方法，组件一般分为基础组件和业务组件，组件应该各司其职，比如基础组件就不应该包含跟业务相关的具体代码，只是返回一个信息，给引用它的组件。这样可以降低组件的耦合度，提升组件的可复用性。</p>
-<p>比如一个confirm组件</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">transition</span> <span class="attr">name</span>=<span class="string">"confirm"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"info-confirm"</span> <span class="attr">v-show</span>=<span class="string">"showFlag"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"info-header"</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">span</span>&gt;</span>提示信息<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"info-text"</span>&gt;</span></span><br><span class="line">        &#123;&#123; text &#125;&#125;</span><br><span class="line">      <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"info-button"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> @<span class="attr">click.prevent</span>=<span class="string">"confirm"</span>&gt;</span>&#123;&#123; confirmBtnText &#125;&#125;<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> @<span class="attr">click.prevent</span>=<span class="string">"cancle"</span>&gt;</span>&#123;&#123; cancleBtnText &#125;&#125;<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">transition</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="undefined">  props: &#123;</span></span><br><span class="line"><span class="undefined">    text: &#123;</span></span><br><span class="line"><span class="javascript">      type: <span class="built_in">String</span>,</span></span><br><span class="line"><span class="javascript">      <span class="keyword">default</span>: <span class="string">''</span></span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">    confirmBtnText: &#123;</span></span><br><span class="line"><span class="javascript">      type: <span class="built_in">String</span>,</span></span><br><span class="line"><span class="javascript">      <span class="keyword">default</span>: <span class="string">'确定'</span></span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">    cancleBtnText: &#123;</span></span><br><span class="line"><span class="javascript">      type: <span class="built_in">String</span>,</span></span><br><span class="line"><span class="javascript">      <span class="keyword">default</span>: <span class="string">'取消'</span></span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">  &#125;,</span></span><br><span class="line"><span class="undefined">  data () &#123;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">return</span> &#123;</span></span><br><span class="line"><span class="javascript">      showFlag: <span class="literal">false</span></span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">  &#125;,</span></span><br><span class="line"><span class="undefined">  methods: &#123;</span></span><br><span class="line"><span class="undefined">    hide () &#123;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.showFlag = <span class="literal">false</span></span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">    show () &#123;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.showFlag = <span class="literal">true</span></span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">    confirm () &#123;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.hide()</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.$emit(<span class="string">'confirm'</span>)</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">    cancle () &#123;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.hide()</span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.$emit(<span class="string">'cancle'</span>)</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">  &#125;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>在点击确认后，不应该直接在这里组件里面处理接下来的逻辑（比如删除或着清空），而是应该通过this.$emit(‘confirm’)向父组件传递一个确认的信息，父组件监听这个方法，然后再处理接下来的逻辑</p>
-<p>这个项目后续将会重点围绕这点来进行优化</p>
-<h3 id="前后端如何分离"><a href="#前后端如何分离" class="headerlink" title="前后端如何分离"></a>前后端如何分离</h3><p>这是之前我最想知道的问题，听过很多前后端分离，但是都是只闻其声，不见其形。</p>
-<p>之前同学问过我这样一个问题，<strong>为什么前端也要单独起一个服务</strong>，当时我脑海里，闪过的第一个答案就是，现在前端构建项目需要依赖很多包，需要通过node环境来安装各种依赖工作，帮助我们工作。</p>
-<p>现在看来这个答案大错特错了，问的是服务，而不是node环境。其实这个问题的答案和前后端分离也和相关</p>
-<p>在传统web开发的时候，前端和后端的工作比较耦合，后端人员要做着很多前端的工作，不停切换，比如发送后台请求。这样导致前后端分工不明确，效率反而更加低。不仅如此，而且前后端还要搭建同样的开发环境，让前端开发去搭建一个Java开发环境，显得有些复杂，而且确实没必要。</p>
-<p>现代web开发，前后端各司其职，开发之前约定好数据接口和格式，就可以同时开发了。</p>
-<p>前端负责静态样式的编写，以及发送ajax请求，后台负责api的开发和测试。双方都不用管对方具体怎么实现。</p>
-<p><img src="/2017/11/02/vue-project/1.png" alt=""></p>
-<p>前面也说到过前端不应该去搭建一个复杂的Java或者其他后台服务，我们可以通过nodejs来搭建一个服务器，寥寥几行代码，便可快速搭建，搭建nodejs服务器的好处</p>
-<ul>
-<li><p>可以模拟线上环境，毕竟本地静态文件和线上还是有些差别，比如路径等</p>
-</li>
-<li><p>发送ajax，还要处理跨域</p>
-</li>
-<li><p>部署线上，中间层，用于加载静态文件</p>
-</li>
-</ul>
-<h3 id="前后端如何部署"><a href="#前后端如何部署" class="headerlink" title="前后端如何部署"></a>前后端如何部署</h3><p>在前后端完全分离的情况下，前端和后端当然是分别部署(本案例由于是自己一个人写的，并且后台语言正好是nodejs，所以没有将前后端分别部署），比如www.xxxuthus.cn， 那么后台api可以使用一个二级域名 api.xxxuthus.cn</p>
-<p>前端部署，nodejs为一个中间层，作为静态文件服务器，比如将webpack打包后的dist作为静态资源</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">'express'</span>)</span><br><span class="line"><span class="keyword">const</span> env = process.env.NODE_ENV || <span class="string">'development'</span></span><br><span class="line"><span class="keyword">const</span> app = express()</span><br><span class="line">app.use(express.static(<span class="string">'./dist'</span>))</span><br><span class="line"><span class="keyword">const</span> server = app.listen(<span class="number">4000</span>, () =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`Express started in <span class="subst">$&#123;app.get(<span class="string">'env'</span>)&#125;</span> mode on http://localhsot:4000`</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>使用nginx进行反向代理，当用户访问静态资源的时候，返回静态资源，当前台访问api的时候，转发到后台服务器</p>
-<p>该配置文件是该项目的，该项目没有严格按照前后端分离部署，所以其它场景配置文件仅供参考</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">  upstream xxxuthus &#123;</span><br><span class="line">  server <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">4000</span>;</span><br><span class="line">&#125;</span><br><span class="line">server &#123;</span><br><span class="line">  listen <span class="number">80</span>;</span><br><span class="line">  server_name www.xxxuthus.cn;</span><br><span class="line">  location / &#123;</span><br><span class="line">    proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">    proxy_set_header X-Forward-For $proxy_add_x_forwarded_for;</span><br><span class="line">    proxy_set_header Host $http_host;</span><br><span class="line">    proxy_set_header X-Nginx-Proxt <span class="literal">true</span>;</span><br><span class="line">    proxy_pass http:<span class="comment">//xxxuthus;</span></span><br><span class="line">    proxy_redirect off;</span><br><span class="line">  &#125;</span><br><span class="line">  location ~* ^.+\.(jpg|jpeg|gif|png|ico|css|js|pdf|txt) &#123;</span><br><span class="line">    root /www/vnpastime/production/current/dist;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="/2017/11/02/vue-project/2.png" alt=""></p>
-<h3 id="跨域"><a href="#跨域" class="headerlink" title="跨域"></a>跨域</h3><p>前后端分离，就会面临着跨域问题，比较常用的跨域CORS，proxy代理以及nginx反向代理</p>
-<p>在开发环境中我一般使用proxy代理的方式，通过在config/index.js下面设置</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">proxyTable: &#123;</span><br><span class="line">  <span class="string">'/api'</span>:&#123;</span><br><span class="line">    target: <span class="string">'http://localhost:4000'</span>,</span><br><span class="line">    changeOrigin: <span class="literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">'/auth'</span>:&#123;</span><br><span class="line">    target: <span class="string">'http://localhost:4000'</span>,</span><br><span class="line">    changeOrigin: <span class="literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-<p>我们前端服务为8080，当我们访问/api/**的时候，便会转发到端口为4000的服务上</p>
-<p>生产环境我使用的是nginx代理，前面已经有所介绍</p>
-<h3 id="Node-js项目部署工具pm2"><a href="#Node-js项目部署工具pm2" class="headerlink" title="Node.js项目部署工具pm2"></a>Node.js项目部署工具pm2</h3><p>pm2是node的一个进程管理器，能够保证进程永远或者，使用它部署变得相当容易</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install pm2 -g</span><br></pre></td></tr></table></figure>
-<p>配置文件，在项目根目录项新建文件ecosystem.json</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"apps"</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">"name"</span>: <span class="string">"vnpastime"</span>,</span><br><span class="line">      <span class="string">"script"</span>: <span class="string">"app.js"</span>,</span><br><span class="line">      <span class="string">"env"</span>: &#123;</span><br><span class="line">        <span class="string">"COMMON_VARIABLE"</span>: <span class="string">"true"</span></span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="string">"env_production"</span> : &#123;</span><br><span class="line">        <span class="string">"NODE_ENV"</span>: <span class="string">"production"</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  <span class="string">"deploy"</span>: &#123;</span><br><span class="line">    <span class="string">"production"</span>: &#123;</span><br><span class="line">      <span class="string">"user"</span>: <span class="string">"xuthus_y"</span>,</span><br><span class="line">      <span class="string">"host"</span>: [<span class="string">"106.14.173.2"</span>],</span><br><span class="line">      <span class="string">"port"</span>: <span class="string">"22"</span>,</span><br><span class="line">      <span class="string">"ref"</span>: <span class="string">"origin/master"</span>,</span><br><span class="line">      <span class="string">"repo"</span>: <span class="string">"git@github.com:xxxgitone/vue-node-pastime.git"</span>,</span><br><span class="line">      <span class="string">"path"</span>: <span class="string">"/www/vnpastime/production"</span>,</span><br><span class="line">      <span class="string">"ssh_options"</span>: <span class="string">"StrictHostKeyChecking=no"</span>,</span><br><span class="line">      <span class="string">"post-deploy"</span> : <span class="string">"npm install &amp;&amp; npm run build &amp;&amp; pm2 startOrRestart ecosystem.json --env production"</span>,</span><br><span class="line">      <span class="string">"env"</span>  : &#123;</span><br><span class="line">        <span class="string">"NODE_ENV"</span>: <span class="string">"production"</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>将该文件push到github中，初次启动执行</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm2 deploy ecosystem.json production setup</span><br></pre></td></tr></table></figure>
-<p>然后<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm2 deploy ecosystem.json production</span><br></pre></td></tr></table></figure></p>
-<p>可以在服务器，通过pm2 list和pm2 logs分别查看部署成功的应用和部署日志</p>
-<p>以后每次修改的项目，push到github后，直接在本地通过<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm2 deploy ecosystem.json production</span><br></pre></td></tr></table></figure></p>
-<p>就可以更新线上的内容了</p>
-<p><a href="https://github.com/xxxgitone/learningProcess/blob/master/linux/%E4%BA%91%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2.md" target="_blank" rel="external">这里</a>记录了我部署过程中的一些关键步骤，可以参考</p>
-<h3 id="Build-Setup"><a href="#Build-Setup" class="headerlink" title="Build Setup"></a>Build Setup</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># clone项目</span></span><br><span class="line">git <span class="built_in">clone</span> git@github.com:xxxgitone/vue-node-pastime.git</span><br><span class="line"><span class="built_in">cd</span> vue-node-pastime</span><br><span class="line"><span class="comment"># install dependencies</span></span><br><span class="line">npm install</span><br><span class="line"><span class="comment"># 还原数据，为了方便展示，我将数据库上传到了项目中，文件名为vnpastime</span></span><br><span class="line"><span class="comment"># --host 数据库服务</span></span><br><span class="line"><span class="comment"># -d 数据库名</span></span><br><span class="line"><span class="comment"># 最后面是备份文件的路径,如果不在该目录下记得填写绝对路径</span></span><br><span class="line">mongorestore --host 127.0.0.1:27017 -d vnpastime ./vnpastime/</span><br><span class="line"><span class="comment"># 启动mongodb服务</span></span><br><span class="line">mongo</span><br><span class="line"><span class="comment"># 启动后台服务</span></span><br><span class="line">node app.js</span><br><span class="line"><span class="comment"># 再启动前台</span></span><br><span class="line">npm run dev</span><br><span class="line"><span class="comment"># build for production with minification</span></span><br><span class="line">npm run build</span><br></pre></td></tr></table></figure>
-<p>来源：<a href="https://cnodejs.org/topic/59915bd8ee602e88524b421b" target="_blank" rel="external">https://cnodejs.org/topic/59915bd8ee602e88524b421b</a></p>
+            <h3 id="View绘制流程调用链图"><a href="#View绘制流程调用链图" class="headerlink" title="View绘制流程调用链图"></a>View绘制流程调用链图</h3><p><img src="/2017/11/02/android-custom-view/1.jpg" alt=""></p>
+<p>记清楚函数调用的顺序才能准确地进行调用。</p>
+<p>根据调用链，可将整个绘制过程分为三部分：<strong>Measure - Layout - Draw</strong></p>
+<h3 id="Measure-过程"><a href="#Measure-过程" class="headerlink" title="Measure 过程"></a>Measure 过程</h3><p>测量过程由上至下，在measure过程的最后，每个视图将存储自己的尺寸大小和测量规格。</p>
+<p>measure过程会为一个View及其所有子节点的mMeasureWidth和mMeasuredHeight变量赋值， 该值可以通过getMeasuredWidth和getMeasuredHeight方法获得。</p>
+<p>measure过程的核心方法: <strong>measure() - onMeasure() - setMeasuredDimension().</strong></p>
+<p>setMeasuredDimension是测量阶段的终极方法，在onMeasure()方法中调用，将计算得到的尺寸，传递给该方法，测量阶段结束。在自定义 视图时，不需要关心系统复杂的Measure过程，只需要调用setMeasuredDimension()设置根据MeasureSpec计算得到的尺寸即可。同时, onMeasure()方法也必须调用setMeasuredDimension()方法来设置重新测量之后的</p>
+<p>以measureChildren为例的调用链图:</p>
+<p><img src="/2017/11/02/android-custom-view/2.jpg" alt=""></p>
+<h3 id="Layout-过程"><a href="#Layout-过程" class="headerlink" title="Layout 过程"></a>Layout 过程</h3><p>子视图的具体位置都是相对于父视图而言的。View的onLayout()方法为空实现，而ViewGroup的onLayout为abstract，因此，自定义的View要继承ViewGroup时，必须实现onLayout函数。</p>
+<p>在Layout过程中，子视图会调用getMeasuredWidth()和getMeasuredHeight()方法获取到measure过程得到mMeasuredWidth和mMeasuredHeight，作为自己的width和height。然后调用每一个子视图的layout()，来确定每个子视图在父视图中的位置。</p>
+<h3 id="Draw-过程"><a href="#Draw-过程" class="headerlink" title="Draw 过程"></a>Draw 过程</h3><p>所有视图最终都是调用View的draw方法进行绘制。 在自定义视图中， 也不应该复写该方法， 而是复写onDraw（）方法进行绘制， 如果自定义的视图确实要复写该方法，先调用super.draw()完成系统的绘制，再进行自定义的绘制。</p>
+<p>onDraw()方法默认是空实现，自定义绘制过程需要复写方法，绘制自身的内容。</p>
+<p>dispatchDraw()发起对子视图的绘制，在View中默认为空实现，ViewGroup复写了dispatchDraw()来对其子视图进行绘制。自定义的ViewGroup不应该对dispatchDraw()进行复写。</p>
+<h3 id="如何对自定义View进行控制"><a href="#如何对自定义View进行控制" class="headerlink" title="如何对自定义View进行控制"></a>如何对自定义View进行控制</h3><p>如果想控制View在屏幕上的渲染效果，就在重写onDraw()方法，在里面进行相应的处理。</p>
+<p>如果想要控制用户同View之间的交互操作，则在onTouchEvent()方法中对手势进行控制处理。</p>
+<p>如果想要控制View中内容在屏幕上显示的尺寸大小，就重写onMeasure()方法中进行处理。</p>
+<p>在 XML文件中设置自定义View的XML属性。</p>
+<p>如果想避免失去View的相关状态参数的话，就在onSaveInstanceState() 和 onRestoreInstanceState()方法中保存有关View的状态信息。</p>
+<p>来源：<a href="http://www.jianshu.com/p/f0bc39dbfa26" target="_blank" rel="external">http://www.jianshu.com/p/f0bc39dbfa26</a></p>
 
           
         
