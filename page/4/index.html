@@ -385,87 +385,15 @@
       
         
           
-            <h3 id="1-web始祖HTTP"><a href="#1-web始祖HTTP" class="headerlink" title="1.web始祖HTTP"></a>1.web始祖HTTP</h3><p>全称：超文本传输协议(HyperText Transfer Protocol) ，伴随着计算机网络和浏览器的诞生，HTTP1.0也随之而来，处于计算机网络中的应用层，HTTP是建立在TCP协议之上，所以HTTP协议的瓶颈及其优化技巧都是基于TCP协议本身的特性，例如tcp建立连接的3次握手和断开连接的4次挥手以及每次建立连接带来的RTT延迟时间。</p>
-<h3 id="2-HTTP与现代化浏览器"><a href="#2-HTTP与现代化浏览器" class="headerlink" title="2.HTTP与现代化浏览器"></a>2.HTTP与现代化浏览器</h3><p>早在HTTP建立之初，主要就是为了将超文本标记语言(HTML)文档从Web服务器传送到客户端的浏览器。也是说对于前端来说，我们所写的HTML页面将要放在我们的web服务器上，用户端通过浏览器访问url地址来获取网页的显示内容，但是到了WEB2.0以来，我们的页面变得复杂，不仅仅单纯的是一些简单的文字和图片，同时我们的HTML页面有了CSS，Javascript，来丰富我们的页面展示，当ajax的出现，我们又多了一种向服务器端获取数据的方法，这些其实都是基于HTTP协议的。同样到了移动互联网时代，我们页面可以跑在手机端浏览器里面，但是和PC相比，手机端的网络情况更加复杂，这使得我们开始了不得不对HTTP进行深入理解并不断优化过程中。</p>
-<p><img src="/2017/11/26/http2/1.png" alt=""></p>
-<h3 id="3-HTTP的基本优化"><a href="#3-HTTP的基本优化" class="headerlink" title="3.HTTP的基本优化"></a>3.HTTP的基本优化</h3><p>影响一个HTTP网络请求的因素主要有两个：带宽和延迟。</p>
-<p><strong>带宽</strong>：如果说我们还停留在拨号上网的阶段，带宽可能会成为一个比较严重影响请求的问题，但是现在网络基础建设已经使得带宽得到极大的提升，我们不再会担心由带宽而影响网速，那么就只剩下延迟了。</p>
-<p><strong>延迟</strong>：</p>
-<p><strong>1.浏览器阻塞（HOL blocking）</strong>：浏览器会因为一些原因阻塞请求。浏览器对于同一个域名，同时只能有 4 个连接（这个根据浏览器内核不同可能会有所差异），超过浏览器最大连接数限制，后续请求就会被阻塞。</p>
-<p><strong>2.DNS 查询（DNS Lookup）</strong>：浏览器需要知道目标服务器的 IP 才能建立连接。将域名解析为 IP 的这个系统就是 DNS。这个通常可以利用DNS缓存结果来达到减少这个时间的目的。</p>
-<p><strong>3.建立连接（Initial connection）</strong>：HTTP 是基于 TCP 协议的，浏览器最快也要在第三次握手时才能捎带 HTTP 请求报文，达到真正的建立连接，但是这些连接无法复用会导致每次请求都经历三次握手和慢启动。三次握手在高延迟的场景下影响较明显，慢启动则对文件类大请求影响较大。</p>
-<p><img src="/2017/11/26/http2/2.png" alt=""></p>
-<h3 id="4-HTTP1-0和HTTP1-1的一些区别"><a href="#4-HTTP1-0和HTTP1-1的一些区别" class="headerlink" title="4.HTTP1.0和HTTP1.1的一些区别"></a>4.HTTP1.0和HTTP1.1的一些区别</h3><p>HTTP1.0最早在网页中使用是在1996年，那个时候只是使用一些较为简单的网页上和网络请求上，而HTTP1.1则在1999年才开始广泛应用于现在的各大浏览器网络请求中，同时HTTP1.1也是当前使用最为广泛的HTTP协议。 <strong>主要区别主要体现在</strong>：</p>
-<p><strong>1.缓存处理</strong></p>
-<p>在HTTP1.0中主要使用header里的If-Modified-Since,Expires来做为缓存判断的标准。<br>HTTP1.1则引入了更多的缓存控制策略例如Entity tag，If-Unmodified-Since, If-Match, If-None-Match等更多可供选择的缓存头来控制缓存策略。</p>
-<p><strong>2.带宽优化及网络连接的使用</strong></p>
-<p>HTTP1.0中，存在一些浪费带宽的现象，例如客户端只是需要某个对象的一部分，而服务器却将整个对象送过来了，并且不支持断点续传功能。</p>
-<p>HTTP1.1则在请求头引入了range头域，它允许只请求资源的某个部分，即返回码是206（Partial Content），这样就方便了开发者自由的选择以便于充分利用带宽和连接。</p>
-<p><strong>3.错误通知的管理</strong></p>
-<p>在HTTP1.1中新增了24个错误状态响应码，如409（Conflict）表示请求的资源与资源的当前状态发生冲突；410（Gone）表示服务器上的某个资源被永久性的删除。</p>
-<p><strong>4.Host头处理</strong></p>
-<p>在HTTP1.0中认为每台服务器都绑定一个唯一的IP地址，因此，请求消息中的URL并没有传递主机名（hostname）。但随着虚拟主机技术的发展，在一台物理服务器上可以存在多个虚拟主机（Multi-homed Web Servers），并且它们共享一个IP地址。<br>HTTP1.1的请求消息和响应消息都应支持Host头域，且请求消息中如果没有Host头域会报告一个错误（400 Bad Request）。</p>
-<p><strong>5.长连接</strong></p>
-<p>HTTP 1.1支持长连接（PersistentConnection）和请求的流水线（Pipelining）处理，在一个TCP连接上可以传送多个HTTP请求和响应，减少了建立和关闭连接的消耗和延迟。<br>在HTTP1.1中默认开启Connection： keep-alive，一定程度上弥补了HTTP1.0每次请求都要创建连接的缺点。以下是常见的HTTP1.0：</p>
-<p><img src="/2017/11/26/http2/3.png" alt=""></p>
-<p>区别用一张图来体现：</p>
-<p><img src="/2017/11/26/http2/4.png" alt=""></p>
-<h3 id="5-HTTP1-0和1-1现存的一些问题"><a href="#5-HTTP1-0和1-1现存的一些问题" class="headerlink" title="5.HTTP1.0和1.1现存的一些问题"></a>5.HTTP1.0和1.1现存的一些问题</h3><p>1.上面提到过的，HTTP1.x在传输数据时，每次都需要重新建立连接，无疑增加了大量的延迟时间，特别是在移动端更为突出。</p>
-<p>2.HTTP1.x在传输数据时，所有传输的内容都是明文，客户端和服务器端都无法验证对方的身份，这在一定程度上无法保证数据的安全性。</p>
-<p>3.HTTP1.x在使用时，header里携带的内容过大，在一定程度上增加了传输的成本，并且每次请求header基本不怎么变化，尤其在移动端增加用户流量。</p>
-<p>4.虽然HTTP1.x支持了keep-alive，来弥补多次创建连接产生的延迟，但是keep-alive使用多了同样会给服务端带来大量的性能压力，并且对于单个文件被不断请求的服务(例如图片存放网站)，keep-alive可能会极大的影响性能，因为它在文件被请求之后还保持了不必要的连接很长时间。</p>
-<h3 id="6-HTTPS应声而出"><a href="#6-HTTPS应声而出" class="headerlink" title="6.HTTPS应声而出"></a>6.HTTPS应声而出</h3><p>为了解决以上问题，网景在1994年创建了HTTPS，并应用在网景导航者浏览器中。 最初，HTTPS是与SSL一起使用的；在SSL逐渐演变到TLS时（其实两个是一个东西，只是名字不同而已），最新的HTTPS也由在2000年五月公布的RFC 2818正式确定下来。</p>
-<p>简单来说，HTTPS就是安全版的HTTP，并且由于当今时代对安全性要求更高，chrome和firefox都大力支持网站使用HTTPS，苹果也在ios 10系统中强制app使用HTTPS来传输数据，由此可见HTTPS势在必行。</p>
-<h3 id="7-HTTPS与HTTP的一些区别"><a href="#7-HTTPS与HTTP的一些区别" class="headerlink" title="7.HTTPS与HTTP的一些区别"></a>7.HTTPS与HTTP的一些区别</h3><p>1.HTTPS协议需要到CA申请证书，一般免费证书很少，需要交费。</p>
-<p>2.HTTP协议运行在TCP之上，所有传输的内容都是明文，HTTPS运行在SSL/TLS之上，SSL/TLS运行在TCP之上，所有传输的内容都经过加密的。</p>
-<p>3.HTTP和HTTPS使用的是完全不同的连接方式，用的端口也不一样，前者是80，后者是443。</p>
-<p>4.HTTPS可以有效的防止运营商劫持，解决了防劫持的一个大问题。</p>
-<p><img src="/2017/11/26/http2/5.png" alt=""></p>
-<h3 id="8-HTTPS改造"><a href="#8-HTTPS改造" class="headerlink" title="8.HTTPS改造"></a>8.HTTPS改造</h3><p>如果一个网站要全站由HTTP替换成HTTPS，可能需要关注以下几点：</p>
-<p>1.安装CA证书，一般的证书都是需要收费的，这边推荐一个比较好的购买证书网站：</p>
-<p>1）Let’s Encrypt，免费，快捷，支持多域名（不是通配符），三条命令即时签署+导出证书。缺点是暂时只有三个月有效期，到期需续签。</p>
-<p>2）Comodo PositiveSSL，收费，但是比较稳定。</p>
-<p>2.在购买证书之后，在证书提供的网站上配置自己的域名，将证书下载下来之后，配置自己的web服务器，同时进行代码改造。</p>
-<p>3.HTTPS 降低用户访问速度。SSL握手，HTTPS 对速度会有一定程度的降低，但是只要经过合理优化和部署，HTTPS 对速度的影响完全可以接受。在很多场景下，HTTPS 速度完全不逊于 HTTP，如果使用 SPDY，HTTPS 的速度甚至还要比 HTTP 快。</p>
-<p>4.相对于HTTPS降低访问速度，其实更需要关心的是服务器端的CPU压力，HTTPS中大量的密钥算法计算，会消耗大量的CPU资源，只有足够的优化，HTTPS 的机器成本才不会明显增加。</p>
-<p>推荐一则<a href="http://velocity.oreilly.com.cn/2015/ppts/lizhenyu.pdf" target="_blank" rel="external">淘宝网改造HTTPS</a>的文章。</p>
-<h3 id="9-使用SPDY加快你的网站速度"><a href="#9-使用SPDY加快你的网站速度" class="headerlink" title="9.使用SPDY加快你的网站速度"></a>9.使用SPDY加快你的网站速度</h3><p>2012年google如一声惊雷提出了SPDY的方案，大家才开始从正面看待和解决老版本HTTP协议本身的问题，SPDY可以说是综合了HTTPS和HTTP两者有点于一体的传输协议，主要解决：</p>
-<p><strong>1.降低延迟</strong>，针对HTTP高延迟的问题，SPDY优雅的采取了多路复用（multiplexing）。多路复用通过多个请求stream共享一个tcp连接的方式，解决了HOL blocking的问题，降低了延迟同时提高了带宽的利用率。</p>
-<p><strong>2.请求优先级（request prioritization）</strong>。多路复用带来一个新的问题是，在连接共享的基础之上有可能会导致关键请求被阻塞。SPDY允许给每个request设置优先级，这样重要的请求就会优先得到响应。比如浏览器加载首页，首页的html内容应该优先展示，之后才是各种静态资源文件，脚本文件等加载，这样可以保证用户能第一时间看到网页内容。</p>
-<p><strong>3.header压缩</strong>。前面提到HTTP1.x的header很多时候都是重复多余的。选择合适的压缩算法可以减小包的大小和数量。</p>
-<p><strong>4.基于HTTPS的加密协议传输</strong>，大大提高了传输数据的可靠性。</p>
-<p><strong>5.服务端推送（server push）</strong>，采用了SPDY的网页，例如我的网页有一个sytle.css的请求，在客户端收到sytle.css数据的同时，服务端会将sytle.js的文件推送给客户端，当客户端再次尝试获取sytle.js时就可以直接从缓存中获取到，不用再发请求了。SPDY构成图：</p>
-<p><img src="/2017/11/26/http2/6.png" alt=""></p>
-<p>SPDY位于HTTP之下，TCP和SSL之上，这样可以轻松兼容老版本的HTTP协议(将HTTP1.x的内容封装成一种新的frame格式)，同时可以使用已有的SSL功能。</p>
-<p><strong>兼容性：</strong></p>
-<p><img src="/2017/11/26/http2/7.png" alt=""></p>
-<h3 id="10-HTTP2-0的前世今生"><a href="#10-HTTP2-0的前世今生" class="headerlink" title="10.HTTP2.0的前世今生"></a>10.HTTP2.0的前世今生</h3><p>顾名思义有了HTTP1.x，那么HTTP2.0也就顺理成章的出现了。HTTP2.0可以说是SPDY的升级版（其实原本也是基于SPDY设计的），但是，HTTP2.0 跟 SPDY 仍有不同的地方，主要是以下两点：</p>
-<p>HTTP2.0 支持明文 HTTP 传输，而 SPDY 强制使用 HTTPS<br>HTTP2.0 消息头的压缩算法采用 HPACK，而非 SPDY 采用的 DEFLATE</p>
-<h3 id="11-HTTP2-0的新特性"><a href="#11-HTTP2-0的新特性" class="headerlink" title="11.HTTP2.0的新特性"></a>11.HTTP2.0的新特性</h3><p><strong>新的二进制格式（Binary Format）</strong>，HTTP1.x的解析是基于文本。基于文本协议的格式解析存在天然缺陷，文本的表现形式有多样性，要做到健壮性考虑的场景必然很多，二进制则不同，只认0和1的组合。基于这种考虑HTTP2.0的协议解析决定采用二进制格式，实现方便且健壮。</p>
-<p><strong>多路复用（MultiPlexing）</strong>，即连接共享，即每一个request都是是用作连接共享机制的。一个request对应一个id，这样一个连接上可以有多个request，每个连接的request可以随机的混杂在一起，接收方可以根据request的 id将request再归属到各自不同的服务端请求里面。<strong>多路复用原理图：</strong></p>
-<p><img src="/2017/11/26/http2/8.png" alt=""></p>
-<p><strong>header压缩</strong>，如上文中所言，对前面提到过HTTP1.x的header带有大量信息，而且每次都要重复发送，HTTP2.0使用encoder来减少需要传输的header大小，通讯双方各自cache一份header fields表，既避免了重复header的传输，又减小了需要传输的大小。</p>
-<p><strong>服务端推送（server push）</strong>，同SPDY一样，HTTP2.0也具有server push功能。目前，有大多数网站已经启用HTTP2.0，例如YouTuBe，淘宝网等网站，利用chrome控制台可以查看是否启用H2：</p>
-<p><img src="/2017/11/26/http2/9.png" alt=""></p>
-<p>更多关于HTTP2的问题可以参考：HTTP2奇妙日常，以及HTTP2.0的官方网站。</p>
-<p>关于HTTP2和HTTP1.x的区别大致可以看下图：</p>
-<p><img src="/2017/11/26/http2/10.png" alt=""></p>
-<h3 id="12-HTTP2-0的升级改造"><a href="#12-HTTP2-0的升级改造" class="headerlink" title="12.HTTP2.0的升级改造"></a>12.HTTP2.0的升级改造</h3><p>对比HTTPS的升级改造，HTTP2.0或许会稍微简单一些，你可能需要关注以下问题：</p>
-<p>1.前文说了HTTP2.0其实可以支持非HTTPS的，但是现在主流的浏览器像chrome，firefox表示还是只支持基于 TLS 部署的HTTP2.0协议，所以要想升级成HTTP2.0还是先升级HTTPS为好。</p>
-<p>2.当你的网站已经升级HTTPS之后，那么升级HTTP2.0就简单很多，如果你使用NGINX，只要在配置文件中启动相应的协议就可以了，可以参考NGINX白皮书，NGINX配置HTTP2.0官方指南。</p>
-<p>3.使用了HTTP2.0那么，原本的HTTP1.x怎么办，这个问题其实不用担心，HTTP2.0完全兼容HTTP1.x的语义，对于不支持HTTP2.0的浏览器，NGINX会自动向下兼容的。</p>
-<p>后记</p>
-<p>1.以上就是关于HTTP,HTTP2.0,SPDY,HTTPS的一些基本理论，有些内容没有深入讲解，大家可以跟进参考连接具体查看。</p>
-<p>2.关于HTTP1.x的一些优化方式，例如文件合并压缩，资源cdn，js，css优化等等同样使用与HTTP2.0和HTTPS，所以web前端的优化，还是要继续进行。</p>
-<p>3.其实WEB发展如此迅速的今天，有些技术是真的要与时俱进的，就像苹果宣布ios 10必须使用HTTPS开始，关于web协议革新就已经开始了，为了更好的性能，更优越的方式，现在就开始升级改造吧</p>
-<p>参考资料：</p>
-<p><a href="http://www.nihaoshijie.com.cn/index.php/archives/630" target="_blank" rel="external">http://www.nihaoshijie.com.cn/index.php/archives/630</a></p>
-<p><a href="https://www.nginx.com/blog/7-tips-for-faster-http2-performance/" target="_blank" rel="external">https://www.nginx.com/blog/7-tips-for-faster-http2-performance/</a></p>
-<p><a href="https://www.gitbook.com/book/ye11ow/http2-explained/details" target="_blank" rel="external">https://www.gitbook.com/book/ye11ow/http2-explained/details</a></p>
-<p><a href="http://op.baidu.com/2015/04/https-s01a01/" target="_blank" rel="external">http://op.baidu.com/2015/04/https-s01a01/</a></p>
-<p>来源：<a href="http://www.alloyteam.com/2016/07/httphttp2-0spdyhttps-reading-this-is-enough/" target="_blank" rel="external">http://www.alloyteam.com/2016/07/httphttp2-0spdyhttps-reading-this-is-enough/</a></p>
-
-          
+          1.web始祖HTTP全称：超文本传输协议(HyperText Transfer Protocol) ，伴随着计算机网络和浏览器的诞生，HTTP1.0也随之而来，处于计算机网络中的应用层，HTTP是建立在TCP协议之上，所以HTTP协议的瓶颈及其优化技巧都是基于TCP协议本身的特性，例如tcp建立连
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/11/26/http2/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -621,33 +549,16 @@
       
         
           
-            <h3 id="总体介绍"><a href="#总体介绍" class="headerlink" title="总体介绍"></a>总体介绍</h3><p>Java TreeMap实现了SortedMap接口，也就是说会按照key的大小顺序对Map中的元素进行排序，key大小的评判可以通过其本身的自然顺序（natural ordering），也可以通过构造时传入的比较器（Comparator）。</p>
-<p>TreeMap底层通过红黑树（Red-Black tree）实现，也就意味着containsKey(), get(), put(), remove()都有着log(n)的时间复杂度。其具体算法实现参照了《算法导论》。</p>
-<p><img src="/2017/11/26/red-black/1.png" alt=""></p>
-<p>出于性能原因，TreeMap是非同步的（not synchronized），如果需要在多线程环境使用，需要程序员手动同步；或者通过如下方式将TreeMap包装成（wrapped）同步的：</p>
-<p>SortedMap m = Collections.synchronizedSortedMap(new TreeMap(…));</p>
-<p>红黑树是一种近似平衡的二叉查找树，它能够确保任何一个节点的左右子树的高度差不会超过二者中较低那个的一陪。具体来说，红黑树是满足如下条件的二叉查找树（binary search tree）：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">每个节点要么是红色，要么是黑色。</span><br><span class="line">根节点必须是黑色</span><br><span class="line">红色节点不能连续（也即是，红色节点的孩子和父亲都不能是红色）。</span><br><span class="line">对于每个节点，从该点至null（树尾端）的任何路径，都含有相同个数的黑色节点。</span><br></pre></td></tr></table></figure></p>
-<p><strong>在树的结构发生改变时（插入或者删除操作），往往会破坏上述条件3或条件4，需要通过调整使得查找树重新满足红黑树的条件。</strong></p>
-<h3 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h3><p>前文说到当查找树的结构发生改变时，红黑树的条件可能被破坏，需要通过调整使得查找树重新满足红黑树的条件。调整可以分为两类：一类是颜色调整，即改变某个节点的颜色；另一类是结构调整，集改变检索树的结构关系。结构调整过程包含两个基本操作：左旋（Rotate Left），右旋（RotateRight）。</p>
-<h3 id="左旋"><a href="#左旋" class="headerlink" title="左旋"></a>左旋</h3><p>左旋的过程是将x的右子树绕x逆时针旋转，使得x的右子树成为x的父亲，同时修改相关节点的引用。旋转之后，二叉查找树的属性仍然满足。</p>
-<p><img src="/2017/11/26/red-black/2.png" alt=""></p>
-<p>TreeMap中左旋代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Rotate Left</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">rotateLeft</span><span class="params">(Entry&lt;K,V&gt; p)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (p != <span class="keyword">null</span>) &#123;</span><br><span class="line">        Entry&lt;K,V&gt; r = p.right;</span><br><span class="line">        p.right = r.left;</span><br><span class="line">        <span class="keyword">if</span> (r.left != <span class="keyword">null</span>)</span><br><span class="line">            r.left.parent = p;</span><br><span class="line">        r.parent = p.parent;</span><br><span class="line">        <span class="keyword">if</span> (p.parent == <span class="keyword">null</span>)</span><br><span class="line">            root = r;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (p.parent.left == p)</span><br><span class="line">            p.parent.left = r;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            p.parent.right = r;</span><br><span class="line">        r.left = p;</span><br><span class="line">        p.parent = r;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="右旋"><a href="#右旋" class="headerlink" title="右旋"></a>右旋</h3><p>右旋的过程是将x的左子树绕x顺时针旋转，使得x的左子树成为x的父亲，同时修改相关节点的引用。旋转之后，二叉查找树的属性仍然满足。</p>
-<p><img src="/2017/11/26/red-black/3.png" alt=""></p>
-<p>TreeMap中右旋代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Rotate Right</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">rotateRight</span><span class="params">(Entry&lt;K,V&gt; p)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (p != <span class="keyword">null</span>) &#123;</span><br><span class="line">        Entry&lt;K,V&gt; l = p.left;</span><br><span class="line">        p.left = l.right;</span><br><span class="line">        <span class="keyword">if</span> (l.right != <span class="keyword">null</span>) l.right.parent = p;</span><br><span class="line">        l.parent = p.parent;</span><br><span class="line">        <span class="keyword">if</span> (p.parent == <span class="keyword">null</span>)</span><br><span class="line">            root = l;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (p.parent.right == p)</span><br><span class="line">            p.parent.right = l;</span><br><span class="line">        <span class="keyword">else</span> p.parent.left = l;</span><br><span class="line">        l.right = p;</span><br><span class="line">        p.parent = l;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="方法剖析"><a href="#方法剖析" class="headerlink" title="方法剖析"></a>方法剖析</h3><h3 id="get"><a href="#get" class="headerlink" title="get()"></a>get()</h3><p>get(Object key)方法根据指定的key值返回对应的value，该方法调用了getEntry(Object key)得到相应的entry，然后返回entry.value。因此<strong>getEntry()是算法的核心</strong>。算法思想是<strong>根据key的自然顺序（或者比较器顺序）对二叉查找树进行查找，直到找到满足k.compareTo(p.key) == 0的entry。</strong></p>
-<p><img src="/2017/11/26/red-black/4.png" alt=""></p>
-<p>具体代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//getEntry()方法</span></span><br><span class="line"><span class="function"><span class="keyword">final</span> Entry&lt;K,V&gt; <span class="title">getEntry</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    ......</span><br><span class="line">    <span class="keyword">if</span> (key == <span class="keyword">null</span>)<span class="comment">//不允许key值为null</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    Comparable&lt;? <span class="keyword">super</span> K&gt; k = (Comparable&lt;? <span class="keyword">super</span> K&gt;) key;<span class="comment">//使用元素的自然顺序</span></span><br><span class="line">    Entry&lt;K,V&gt; p = root;</span><br><span class="line">    <span class="keyword">while</span> (p != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> cmp = k.compareTo(p.key);</span><br><span class="line">        <span class="keyword">if</span> (cmp &lt; <span class="number">0</span>)<span class="comment">//向左找</span></span><br><span class="line">            p = p.left;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (cmp &gt; <span class="number">0</span>)<span class="comment">//向右找</span></span><br><span class="line">            p = p.right;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">return</span> p;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="put"><a href="#put" class="headerlink" title="put()"></a>put()</h3><p>put(K key, V value)方法是将指定的key, value对添加到map里。<strong>该方法首先会对map做一次查找，看是否包含该元组，如果已经包含则直接返回，查找过程类似于getEntry()方法；如果没有找到则会在红黑树中插入新的entry，如果插入之后破坏了红黑树的约束，还需要进行调整（旋转，改变某些节点的颜色）</strong>。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> V <span class="title">put</span><span class="params">(K key, V value)</span> </span>&#123;</span><br><span class="line">    ......</span><br><span class="line">    <span class="keyword">int</span> cmp;</span><br><span class="line">    Entry&lt;K,V&gt; parent;</span><br><span class="line">    <span class="keyword">if</span> (key == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    Comparable&lt;? <span class="keyword">super</span> K&gt; k = (Comparable&lt;? <span class="keyword">super</span> K&gt;) key;<span class="comment">//使用元素的自然顺序</span></span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        parent = t;</span><br><span class="line">        cmp = k.compareTo(t.key);</span><br><span class="line">        <span class="keyword">if</span> (cmp &lt; <span class="number">0</span>) t = t.left;<span class="comment">//向左找</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (cmp &gt; <span class="number">0</span>) t = t.right;<span class="comment">//向右找</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">return</span> t.setValue(value);</span><br><span class="line">    &#125; <span class="keyword">while</span> (t != <span class="keyword">null</span>);</span><br><span class="line">    Entry&lt;K,V&gt; e = <span class="keyword">new</span> Entry&lt;&gt;(key, value, parent);<span class="comment">//创建并插入新的entry</span></span><br><span class="line">    <span class="keyword">if</span> (cmp &lt; <span class="number">0</span>) parent.left = e;</span><br><span class="line">    <span class="keyword">else</span> parent.right = e;</span><br><span class="line">    fixAfterInsertion(e);<span class="comment">//调整</span></span><br><span class="line">    size++;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>上述代码的插入部分并不难理解：<strong>首先在红黑树上找到合适的位置，然后创建新的entry并插入（当然，新插入的节点一定是树的叶子）。难点是调整函数fixAfterInsertion()，前面已经说过，调整往往需要:</strong></p>
-<p><strong>1.改变某些节点的颜色，2.对某些节点进行旋转</strong>。</p>
-<p><img src="/2017/11/26/red-black/5.png" alt=""></p>
-<p>调整函数fixAfterInsertion()的具体代码如下，其中用到了上文中提到的rotateLeft()和rotateRight()函数。通过代码我们能够看到，情况2其实是落在情况3内的。情况4～情况6跟前三种情况是对称的，因此图解中并没有画出后三种情况，读者可以参考代码自行理解。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//红黑树调整函数fixAfterInsertion()</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">fixAfterInsertion</span><span class="params">(Entry&lt;K,V&gt; x)</span> </span>&#123;</span><br><span class="line">    x.color = RED;</span><br><span class="line">    <span class="keyword">while</span> (x != <span class="keyword">null</span> &amp;&amp; x != root &amp;&amp; x.parent.color == RED) &#123;</span><br><span class="line">        <span class="keyword">if</span> (parentOf(x) == leftOf(parentOf(parentOf(x)))) &#123;</span><br><span class="line">            Entry&lt;K,V&gt; y = rightOf(parentOf(parentOf(x)));</span><br><span class="line">            <span class="keyword">if</span> (colorOf(y) == RED) &#123;<span class="comment">//如果y为null，则视为BLACK</span></span><br><span class="line">                setColor(parentOf(x), BLACK);              <span class="comment">// 情况1</span></span><br><span class="line">                setColor(y, BLACK);                        <span class="comment">// 情况1</span></span><br><span class="line">                setColor(parentOf(parentOf(x)), RED);      <span class="comment">// 情况1</span></span><br><span class="line">                x = parentOf(parentOf(x));                 <span class="comment">// 情况1</span></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (x == rightOf(parentOf(x))) &#123;</span><br><span class="line">                    x = parentOf(x);                       <span class="comment">// 情况2</span></span><br><span class="line">                    rotateLeft(x);                         <span class="comment">// 情况2</span></span><br><span class="line">                &#125;</span><br><span class="line">                setColor(parentOf(x), BLACK);              <span class="comment">// 情况3</span></span><br><span class="line">                setColor(parentOf(parentOf(x)), RED);      <span class="comment">// 情况3</span></span><br><span class="line">                rotateRight(parentOf(parentOf(x)));        <span class="comment">// 情况3</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            Entry&lt;K,V&gt; y = leftOf(parentOf(parentOf(x)));</span><br><span class="line">            <span class="keyword">if</span> (colorOf(y) == RED) &#123;</span><br><span class="line">                setColor(parentOf(x), BLACK);              <span class="comment">// 情况4</span></span><br><span class="line">                setColor(y, BLACK);                        <span class="comment">// 情况4</span></span><br><span class="line">                setColor(parentOf(parentOf(x)), RED);      <span class="comment">// 情况4</span></span><br><span class="line">                x = parentOf(parentOf(x));                 <span class="comment">// 情况4</span></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (x == leftOf(parentOf(x))) &#123;</span><br><span class="line">                    x = parentOf(x);                       <span class="comment">// 情况5</span></span><br><span class="line">                    rotateRight(x);                        <span class="comment">// 情况5</span></span><br><span class="line">                &#125;</span><br><span class="line">                setColor(parentOf(x), BLACK);              <span class="comment">// 情况6</span></span><br><span class="line">                setColor(parentOf(parentOf(x)), RED);      <span class="comment">// 情况6</span></span><br><span class="line">                rotateLeft(parentOf(parentOf(x)));         <span class="comment">// 情况6</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    root.color = BLACK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="remove"><a href="#remove" class="headerlink" title="remove()"></a>remove()</h3><p>remove(Object key)的作用是删除key值对应的entry，该方法首先通过上文中提到的getEntry(Object key)方法找到key值对应的entry，然后调用deleteEntry(Entry<k,v> entry)删除对应的entry。由于删除操作会改变红黑树的结构，有可能破坏红黑树的约束，因此有可能要进行调整。</k,v></p>
-<p>来源：<a href="http://www.cnblogs.com/CarpenterLee/p/5503882.html" target="_blank" rel="external">http://www.cnblogs.com/CarpenterLee/p/5503882.html</a></p>
-<p>其他参考：<a href="https://segmentfault.com/a/1190000000472153" target="_blank" rel="external">https://segmentfault.com/a/1190000000472153</a></p>
-
-          
+          总体介绍Java TreeMap实现了SortedMap接口，也就是说会按照key的大小顺序对Map中的元素进行排序，key大小的评判可以通过其本身的自然顺序（natural ordering），也可以通过构造时传入的比较器（Comparator）。
+TreeMap底层通过红黑树（Red-Black
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/11/26/red-black/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -803,25 +714,16 @@
       
         
           
-            <p><a href="http://git.oschina.net/leiming97/iOS-MD5Andbase64" target="_blank" rel="external">本文代码下载</a></p>
-<h3 id="MD5和base64加密"><a href="#MD5和base64加密" class="headerlink" title="MD5和base64加密"></a>MD5和base64加密</h3><p>在网络发展趋势日渐迅猛的今天，数据的安全性也越来越重要。因此，如何保证用户数据的安全就成为了我们不得不考虑的一个问题。在iOS中最常见的两种加密方式是base64加密码和MD5加密。base64加密属于可逆性的加密，意思就是既可以加密，也可以解密。而MD5加密属于不可逆性的加密，只能够给我们提供加密的方式，却没有解密的方式，一般情况多应用与登录注册界面。</p>
-<h3 id="MD5加密"><a href="#MD5加密" class="headerlink" title="MD5加密"></a>MD5加密</h3><h3 id="MD5简介"><a href="#MD5简介" class="headerlink" title="MD5简介"></a>MD5简介</h3><p>MD5是利用哈希算法来加密的。哈希算法是一种摘要算法，从严格意义上来讲它不属于加密算法（因为它没有解密的过程），MD5有以下两个最主要的特性。</p>
-<p>加密的不可逆性，只能够加密，不能够解密。<br>任意长度的明文经过加密后长度都是固定的，长度为16进制32位。<br>它还有以下几种特点</p>
-<p>容易计算：根据原数据计算出MD5很容易<br>抗修改性：MD5对原数据十分的敏感，哪怕只修改了一个字节，得到的MD5的值与之前的MD5数值都有很大的差别。<br>防伪性能高：已知原数据和它的MD5值，想要找到相同MD5值得数据是非常困难的，可以说几乎是不可能的。<br>准备工作<br>在我们正式使用MD5之前我们还需要做一些准备工作，首先我们需要引入<code>&lt;CommonCrypto/CommonCrypto.h&gt;</code>这个头文件。</p>
-<p>示例代码</p>
-<p>在这里我们将MD5加密封装在一个类中，以便于我们日后使用起来更加的方便。这里我们提供了两个类方法，分别对NSString和NSData进行加密，声明成类方法是为了调用的时候方便。</p>
-<p>MySecurities.h 文件<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line">@interface MySecurities : NSObject</span><br><span class="line">+(NSString *)md5String:(NSString *)sourceString;<span class="comment">//md5字符串加密</span></span><br><span class="line">+(NSString *)md5Data:(NSData *)sourceData;<span class="comment">//md5data加密</span></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
-<p>MySecurities.h 文件<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">@implementation MySecurities</span><br><span class="line">+(NSString *)md5String:(NSString *)sourceString&#123;</span><br><span class="line"><span class="keyword">if</span>(!sourceString)&#123;</span><br><span class="line"><span class="keyword">return</span> nil;<span class="comment">//判断sourceString如果为空则直接返回nil。</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//MD5加密都是通过C级别的函数来计算，所以需要将加密的字符串转换为C语言的字符串</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> *cString = sourceString.UTF8String;</span><br><span class="line"><span class="comment">//创建一个C语言的字符数组，用来接收加密结束之后的字符</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">char</span> result[CC_MD5_DIGEST_LENGTH];</span><br><span class="line"><span class="comment">//MD5计算（也就是加密）</span></span><br><span class="line"><span class="comment">//第一个参数：需要加密的字符串</span></span><br><span class="line"><span class="comment">//第二个参数：需要加密的字符串的长度</span></span><br><span class="line"><span class="comment">//第三个参数：加密完成之后的字符串存储的地方</span></span><br><span class="line">CC_MD5(cString, (CC_LONG)<span class="built_in">strlen</span>(cString), result);</span><br><span class="line"><span class="comment">//将加密完成的字符拼接起来使用（16进制的）。</span></span><br><span class="line"><span class="comment">//声明一个可变字符串类型，用来拼接转换好的字符</span></span><br><span class="line">NSMutableString *resultString = [[NSMutableString alloc]init];</span><br><span class="line"><span class="comment">//遍历所有的result数组，取出所有的字符来拼接</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; CC_MD5_DIGEST_LENGTH; i++) &#123;</span><br><span class="line">      [resultString  appendFormat:@<span class="string">"%02x"</span>,result[i]];</span><br><span class="line"><span class="comment">//%02x：x 表示以十六进制形式输出，02 表示不足两位，前面补0输出；超出两位，不影响。当x小写的时候，返回的密文中的字母就是小写的，当X大写的时候返回的密文中的字母是大写的。</span></span><br><span class="line">  &#125;</span><br><span class="line"><span class="comment">//打印最终需要的字符</span></span><br><span class="line">  NSLog(@<span class="string">"resultString === %@"</span>,resultString);</span><br><span class="line">  <span class="keyword">return</span> resultString;</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
-<p>MySecurities.h 文件<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">@implementation MySecurities</span><br><span class="line">+(NSString *)md5Data:(NSData *)sourceData&#123;</span><br><span class="line">  <span class="keyword">if</span> (!sourceData) &#123;</span><br><span class="line">      <span class="keyword">return</span> nil;<span class="comment">//判断sourceString如果为空则直接返回nil。</span></span><br><span class="line">  &#125;</span><br><span class="line"><span class="comment">//需要MD5变量并且初始化</span></span><br><span class="line">  CC_MD5_CTX  md5;</span><br><span class="line">  CC_MD5_Init(&amp;md5);</span><br><span class="line"><span class="comment">//开始加密(第一个参数：对md5变量去地址，要为该变量指向的内存空间计算好数据，第二个参数：需要计算的源数据，第三个参数：源数据的长度)</span></span><br><span class="line">  CC_MD5_Update(&amp;md5, sourceData.bytes, (CC_LONG)sourceData.length);</span><br><span class="line"><span class="comment">//声明一个无符号的字符数组，用来盛放转换好的数据</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">char</span> result[CC_MD5_DIGEST_LENGTH];</span><br><span class="line"><span class="comment">//将数据放入result数组</span></span><br><span class="line">  CC_MD5_Final(result, &amp;md5);</span><br><span class="line"><span class="comment">//将result中的字符拼接为OC语言中的字符串，以便我们使用。</span></span><br><span class="line">  NSMutableString *resultString = [NSMutableString <span class="built_in">string</span>];</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; CC_MD5_DIGEST_LENGTH; i++) &#123;</span><br><span class="line">      [resultString appendFormat:@<span class="string">"%02X"</span>,result[i]];</span><br><span class="line">  &#125;</span><br><span class="line">  NSLog(@<span class="string">"resultString=========%@"</span>,resultString);</span><br><span class="line">  <span class="keyword">return</span>  resultString;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
-<h3 id="base64加密"><a href="#base64加密" class="headerlink" title="base64加密"></a>base64加密</h3><h3 id="base64简介"><a href="#base64简介" class="headerlink" title="base64简介"></a>base64简介</h3><p>Base64编码可用于在HTTP环境下传递较长的标识信息。例如，在Java Persistence系统Hibernate中，就采用了Base64来将一个较长的唯一标识符（一般为128-bit的UUID）编码为一个字符串，用作HTTP表单和HTTP GET URL中的参数。在其他应用程序中，也常常需要把二进制数据编码为适合放在URL（包括隐藏表单域）中的形式。此时，采用Base64编码不仅比较简短，同时也具有不可读性，即所编码的数据不会被人用肉眼所直接看到。</p>
-<p>示例代码</p>
-<p>和MD5一样我们采取封装的办法将base64封装进了MySecurities这个类中，我们也提供了两种加密的方式</p>
-<p>MySecurities.h 文件<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line">@interface MySecurities : NSObject</span><br><span class="line">+(NSString *)base64EncodingWithData:(NSData *)sourceData;<span class="comment">//base64加密</span></span><br><span class="line">+(id)base64EncodingWithString:(NSString *)sourceString;<span class="comment">//base64解密</span></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
-<h3 id="base64加密-1"><a href="#base64加密-1" class="headerlink" title="base64加密"></a>base64加密</h3><p>MySecurities.m 文件<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@implementation MySecurities</span><br><span class="line">+(NSString *)base64EncodingWithData:(NSData *)sourceData&#123;</span><br><span class="line">    <span class="keyword">if</span> (!sourceData) &#123;<span class="comment">//如果sourceData则返回nil，不进行加密。</span></span><br><span class="line">        <span class="keyword">return</span> nil;</span><br><span class="line">    &#125;</span><br><span class="line">    NSString *resultString = [sourceData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];</span><br><span class="line">    <span class="keyword">return</span> resultString;</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
-<h3 id="base64解密"><a href="#base64解密" class="headerlink" title="base64解密"></a>base64解密</h3><p> MySecurities.m 文件<br> <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@implementation MySecurities</span><br><span class="line">+(id)base64EncodingWithString:(NSString *)sourceString&#123;</span><br><span class="line">    <span class="keyword">if</span> (!sourceString) &#123;</span><br><span class="line">        <span class="keyword">return</span> nil;<span class="comment">//如果sourceString则返回nil，不进行解密。</span></span><br><span class="line">    &#125;</span><br><span class="line">    NSData *resultData = [[NSData alloc]initWithBase64EncodedString:sourceString options:NSDataBase64DecodingIgnoreUnknownCharacters];</span><br><span class="line">    <span class="keyword">return</span> resultData;</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
-<p>来源：<a href="http://www.jianshu.com/p/d1a22447cc2b" target="_blank" rel="external">http://www.jianshu.com/p/d1a22447cc2b</a></p>
-
-          
+          本文代码下载
+MD5和base64加密在网络发展趋势日渐迅猛的今天，数据的安全性也越来越重要。因此，如何保证用户数据的安全就成为了我们不得不考虑的一个问题。在iOS中最常见的两种加密方式是base64加密码和MD5加密。base64加密属于可逆性的加密，意思就是既可以加密，也可以解密。而MD5加密属
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/11/26/md5-base64/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -977,20 +879,15 @@
       
         
           
-            <h3 id="一-Base64编码由来"><a href="#一-Base64编码由来" class="headerlink" title="一. Base64编码由来"></a>一. Base64编码由来</h3><p>为什么会有Base64编码呢？因为有些网络传送渠道并不支持所有的字节，例如传统的邮件只支持可见字符的传送，像ASCII码的控制字符就 不能通过邮件传送。这样用途就受到了很大的限制，比如图片二进制流的每个字节不可能全部是可见字符，所以就传送不了。最好的方法就是在不改变传统协议的情 况下，做一种扩展方案来支持二进制文件的传送。把不可打印的字符也能用可打印字符来表示，问题就解决了。Base64编码应运而生，Base64就是一种 基于64个可打印字符来表示二进制数据的表示方法。</p>
-<h3 id="二-Base64编码原理"><a href="#二-Base64编码原理" class="headerlink" title="二. Base64编码原理"></a>二. Base64编码原理</h3><p>看一下Base64的索引表，字符选用了”A-Z、a-z、0-9、+、/“ 64个可打印字符。数值代表字符的索引，这个是标准Base64协议规定的，不能更改。64个字符用6个bit位就可以全部表示，一个字节有8个bit 位，剩下两个bit就浪费掉了，这样就不得不牺牲一部分空间了。这里需要弄明白的就是一个Base64字符是8个bit，但是有效部分只有右边的6个 bit，左边两个永远是0。</p>
-<p><img src="/2017/11/26/base64/1.png" alt=""><br>Paste_Image.png</p>
-<p>那么怎么用6个有效bit来表示传统字符的8个bit呢？8和6的最小公倍数 是24，也就是说3个传统字节可以由4个Base64字符来表示，保证有效位数是一样的，这样就多了1/3的字节数来弥补Base64只有6个有效bit 的不足。你也可以说用两个Base64字符也能表示一个传统字符，但是采用最小公倍数的方案其实是最减少浪费的。结合下边的图比较容易理解。Man是三个 字符，一共24个有效bit，只好用4个Base64字符来凑齐24个有效位。红框表示的是对应的Base64，6个有效位转化成相应的索引值再对应 Base64字符表，查出”Man”对应的Base64字符是”TWFU”。说到这里有个原则不知道你发现了没有，要转换成Base64的最小单位就是三个字节，对一个字符串来说每次都是三个字节三个字节的转换，对应的是Base64的四个字节。这个搞清楚了其实就差不多了。</p>
-<p><img src="/2017/11/26/base64/2.png" alt=""><br>Paste_Image.png</p>
-<p><img src="/2017/11/26/base64/3.png" alt=""><br>Paste_Image.png</p>
-<p>但是转换到最后你发现不够三个字节了怎么办呢？愿望终于实现了，我们可以用两 个Base64来表示一个字符或用三个Base64表示两个字符，像下图的A对应的第二个Base64的二进制位只有两个，把后边的四个补0就是了。所以 A对应的Base64字符就是QQ。上边已经说过了，原则是Base64字符的最小单位是四个字符一组，那这才两个 字 符，后边补两个”=”吧。其实不用”=”也不耽误解码，之所以用”=”，可能是考虑到多段编码后的Base64字符串拼起来也不会引起混淆。由此可见 Base64字符串只可能最后出现一个或两个”=”，中间是不可能出现”=”的。下图中字符”BC”的编码过程也是一样的。</p>
-<p><img src="/2017/11/26/base64/4.png" alt=""><br>Paste_Image.png</p>
-<h3 id="三-总结"><a href="#三-总结" class="headerlink" title="三. 总结　　"></a>三. 总结　　</h3><p>　　说起Base64编码可能有些奇怪，因为大多数的编码都是由字符转化成二进制的过程，而从二进制转成字符的过程称为解码。而Base64的概念就恰好反了，由二进制转到字符称为编码，由字符到二进制称为解码。</p>
-<p>　　Base64编码主要用在传输、存储、表示二进制等领域，还可以用来加密，但是这种加密比较简单，只是一眼看上去不知道什么内容罢了，当然也可以对Base64的字符序列进行定制来进行加密。</p>
-<p>　　Base64编码是从二进制到字符的过程，像一些中文字符用不同的编码转为二 进制时，产生的二进制是不一样的，所以最终产生的Base64字符也不一样。例如”上网”对应utf-8格式的Base64编码是”5LiK572R”， 对应GB2312格式的Base64编码是”yc/N+A==”</p>
-<p>来源：<a href="http://www.jianshu.com/p/947b5975c6b0" target="_blank" rel="external">http://www.jianshu.com/p/947b5975c6b0</a></p>
-
-          
+          一. Base64编码由来为什么会有Base64编码呢？因为有些网络传送渠道并不支持所有的字节，例如传统的邮件只支持可见字符的传送，像ASCII码的控制字符就 不能通过邮件传送。这样用途就受到了很大的限制，比如图片二进制流的每个字节不可能全部是可见字符，所以就传送不了。最好的方法就是在不改变传统协议
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/11/26/base64/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1146,113 +1043,18 @@
       
         
           
-            <h3 id="初始搭建"><a href="#初始搭建" class="headerlink" title="初始搭建"></a>初始搭建</h3><p>最开始，就是各种框架一搭，然后扔到 Tomcat 容器中跑，这时候我们的文件、数据库、应用都在一个服务器上。</p>
-<p><img src="/2017/11/25/java-web/1.png" alt=""></p>
-<h3 id="服务分离"><a href="#服务分离" class="headerlink" title="服务分离"></a>服务分离</h3><p>随着系统的上线，用户量也会逐步上升，很快一台服务器已经满足不了系统的负载，这时我们就要在服务器还没有超载时，提前做好准备。</p>
-<p>由于我们是单体架构，优化架构在短时间内是不现实的，增加机器是一个不错的选择。这时，我们可能要把应用和数据库服务单独部署，如果有条件也可以把文件服务器单独部署。</p>
-<p><img src="/2017/11/25/java-web/2.png" alt=""></p>
-<h3 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h3><p><img src="/2017/11/25/java-web/3.png" alt=""></p>
-<p>为了提升服务处理能力，我们在 Tomcat 容器前加一个代理服务器，一般使用 Nginx，当然你如果更熟悉 Apache 也未尝不可。</p>
-<p>用户的请求发送给反向代理，然后反向代理把请求转发到后端的服务器。</p>
-<p>从严格意义上说，Nginx 是属于 Web 服务器，一般处理静态 HTML、CSS、JS 请求；而 Tomcat 属于 Web 容器，专门处理 JSP 请求，当然 Tomcat 也是支持 Html 的，只是效果没 Nginx 好而已。</p>
-<p>反向代理的优势，如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">隐藏真实后端服务。</span><br><span class="line">负载均衡集群。</span><br><span class="line">高可用集群。</span><br><span class="line">缓存静态内容实现动静分离。</span><br><span class="line">安全限流。</span><br><span class="line">静态文件压缩。</span><br><span class="line">解决多个服务跨域问题。</span><br><span class="line">合并静态请求(HTTP/2.0后已经被弱化)。</span><br><span class="line">防火墙。</span><br><span class="line">SSL 以及 http2。</span><br></pre></td></tr></table></figure></p>
-<p>动静分离</p>
-<p><img src="/2017/11/25/java-web/4.png" alt=""></p>
-<p>基于以上 Nginx 反向代理，我们还可以实现动静分离，静态请求如 HTML、CSS、JS 等请求交给 Nginx 处理，动态请求分发给后端 Tomcat 处理。</p>
-<p>Nginx 升级到 1.9.5+ 可以开启 HTTP/2.0 时代，加速网站访问。当然，如果公司不差钱，CDN 也是一个不错的选择。</p>
-<h3 id="服务拆分"><a href="#服务拆分" class="headerlink" title="服务拆分"></a>服务拆分</h3><p>在这分布式微服务已经普遍流行的年代，我们没必要踩过多的坑，就很容易进行拆分。</p>
-<p>市面上已经有相对比较成熟的技术，比如阿里开源的 Dubbo(官方明确表示已经开始维护了)，Spring 家族的 Spring Cloud，当然具体如何去实施，无论是技术还是业务方面都要有很好的把控。</p>
-<p><strong>01 Dubbo</strong></p>
-<p><img src="/2017/11/25/java-web/5.png" alt=""></p>
-<p><strong>02 SpringCloud</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">服务发现——Netflix Eureka</span><br><span class="line">客服端负载均衡——Netflix Ribbon</span><br><span class="line">断路器——Netflix Hystrix</span><br><span class="line">服务网关——Netflix Zuul</span><br><span class="line">分布式配置——Spring Cloud Config</span><br></pre></td></tr></table></figure></p>
-<p><strong>03 微服务与轻量级通信</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">同步通信和异步通信</span><br><span class="line">远程调用 RPC</span><br><span class="line">REST</span><br><span class="line">消息队列</span><br></pre></td></tr></table></figure></p>
-<h3 id="持续集成部署"><a href="#持续集成部署" class="headerlink" title="持续集成部署"></a>持续集成部署</h3><p>服务拆分以后，随之而来的就是持续集成部署，你可能会用到以下工具：Docker、Jenkins、Git、Maven。</p>
-<p>基本拓扑结构如下所示：</p>
-<p><img src="/2017/11/25/java-web/6.png" alt=""></p>
-<p>整个持续集成平台的架构演进，如下图所示：</p>
-<p><img src="/2017/11/25/java-web/7.png" alt=""></p>
-<h3 id="服务集群"><a href="#服务集群" class="headerlink" title="服务集群"></a>服务集群</h3><p>Linux 集群主要分成三大类：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">高可用集群。</span><br><span class="line">负载均衡集群。</span><br><span class="line">科学计算集群。</span><br></pre></td></tr></table></figure></p>
-<p>我们最常见的也是生产中最常接触到的就是负载均衡集群。</p>
-<p><img src="/2017/11/25/java-web/8.png" alt=""></p>
-<p><strong>01 负载均衡实现</strong></p>
-<p>负载均衡实现的三种方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">DNS 负载均衡，一般域名注册商的 DNS 服务器不支持，但我用的阿里云解析已经支持。</span><br><span class="line">四层负载均衡(F5、LVS)，工作在 TCP 协议下。</span><br><span class="line">七层负载均衡(Nginx、haproxy)，工作在 HTTP 协议下。</span><br></pre></td></tr></table></figure></p>
-<p><strong>02 分布式 Session</strong></p>
-<p>大家都知道，服务一般分为有状态和无状态，而分布式 Session 就是针对有状态的服务。</p>
-<p>分布式 Session 的几种实现方式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">基于数据库的 Session 共享。</span><br><span class="line">基于 resin/tomcat web 容器本身的 Session 复制机制。</span><br><span class="line">基于 oscache/Redis/memcached 进行 Session 共享。</span><br><span class="line">基于 cookie 进行 Session 共享。</span><br></pre></td></tr></table></figure></p>
-<p>分布式 Session 的几种管理方式：</p>
-<p><strong>Session Replication 方式管理 (即 Session 复制)。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">简介：将一台机器上的 Session 数据广播复制到集群中其余机器上。</span><br><span class="line">使用场景：机器较少，网络流量较小。</span><br><span class="line">优点：实现简单、配置较少、当网络中有机器 Down 掉时不影响用户访问。</span><br><span class="line">缺点：广播式复制到其余机器有一定延时，带来一定网络开销。</span><br></pre></td></tr></table></figure></p>
-<p><strong>Session Sticky 方式管理。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">简介：即粘性 Session、当用户访问集群中某台机器后，强制指定后续所有请求均落到此机器上。</span><br><span class="line">使用场景：机器数适中、对稳定性要求不是非常苛刻。</span><br><span class="line">优点：实现简单、配置方便、没有额外网络开销。</span><br><span class="line">缺点：网络中有机器 Down 掉时，用户 Session 会丢失、容易造成单点故障。</span><br></pre></td></tr></table></figure></p>
-<p><strong>缓存集中式管理。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">简介：将 Session 存入分布式缓存集群中的某台机器上，当用户访问不同节点时先从缓存中拿 Session 信息。</span><br><span class="line">使用场景：集群中机器数多、网络环境复杂。</span><br><span class="line">优点：可靠性好。</span><br><span class="line">缺点：实现复杂，稳定性依赖于缓存的稳定性、Session 信息放入缓存时要有合理的策略写入。</span><br></pre></td></tr></table></figure></p>
-<p>目前生产中使用到的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">基于 Tomcat 配置实现的 Mem Cache 缓存管理 Session 实现(麻烦)。</span><br><span class="line">基于 Os Cache 和 shiro 组播的方式实现(网络影响)。</span><br><span class="line">基于 Spring-Session+Redis 的方式实现(最适合)。</span><br></pre></td></tr></table></figure></p>
-<p><strong>03 负载均衡策略</strong></p>
-<p>负载均衡策略的优劣及其实现的难易程度有两个关键因素：负载均衡算法，对网络系统状况的检测方式和能力。</p>
-<p><strong>rr 轮询调度算法</strong></p>
-<p>顾名思义，轮询分发请求。优点是实现简单，缺点是不考虑每台服务器的处理能力。</p>
-<p><strong>wrr 加权调度算法</strong></p>
-<p>我们给每个服务器设置权值 weight，负载均衡调度器根据权值调度服务器，服务器被调用的次数跟权值成正比。优点是考虑了服务器处理能力的不同。</p>
-<p><strong>sh 原地址散列</strong></p>
-<p>提取用户 IP，根据散列函数得出一个 key，再根据静态映射表，查出对应的 value，即目标服务器 IP。一单目标机器超负荷，则返回空。</p>
-<p><strong>dh 目标地址散列</strong></p>
-<p>同上，只是现在提取的是目标地址的 IP 来做哈希。优点是以上两种算法都能实现同一个用户访问同一个服务器。</p>
-<p><strong>lc 最少连接</strong></p>
-<p>优先把请求转发给连接数少的服务器。优点是使得集群中各个服务器的负载更加均匀。</p>
-<p><strong>wlc 加权最少连接</strong></p>
-<p>在 lc 的基础上，为每台服务器加上权值。算法为：（活动连接数*256+非活动连接数）÷权重 ，计算出来的值小的服务器优先被选择。优点是可以根据服务器的能力分配请求。</p>
-<p><strong>sed 最短期望延迟</strong></p>
-<p>sed 跟 wlc 类似，区别是不考虑非活动连接数。算法为：（活动连接数+1)*256÷权重，同样计算出来的值小的服务器优先被选择。</p>
-<p><strong>nq 永不排队</strong></p>
-<p>改进的 sed 算法，我们想一下什么情况下才能“永不排队”，那就是服务器的连接数为 0 的时候，那么假如有服务器连接数为 0，均衡器直接把请求转发给它，无需经过 sed 的计算。</p>
-<p><strong>LBLC 基于局部性的最少连接</strong></p>
-<p>均衡器根据请求的目的 IP 地址，找出该 IP 地址最近被使用的服务器，把请求转发之，若该服务器超载，则采用最少连接数算法。</p>
-<p><strong>LBLCR 带复制的基于局部性的最少连接</strong></p>
-<p>均衡器根据请求的目的 IP 地址，找出该 IP 地址最近使用的“服务器组”，注意，这里不是具体某个服务器，然后采用最少连接数算法，从该组中挑出具体的某台服务器出来，把请求转发之。</p>
-<p>若该服务器超载，那么根据最少连接数算法，从在集群的非本服务器组的服务器中，找出一台服务器出来，加入本服务器组，然后把请求转发之。</p>
-<h3 id="读写分离"><a href="#读写分离" class="headerlink" title="读写分离"></a>读写分离</h3><p>MySQL 主从配置，读写分离并引入中间件，开源的 MyCat，阿里的 DRDS 都是不错的选择。</p>
-<p>如果是对高可用要求比较高，但是又没有相应的技术保障，建议使用阿里云的 RDS 或者 Redis 相关数据库，省事省力又省钱。</p>
-<h3 id="全文检索"><a href="#全文检索" class="headerlink" title="全文检索"></a>全文检索</h3><p>如果有搜索业务需求，引入 solr 或者 elasticsearch 也是一个不错的选择，不要什么都塞进关系型数据库。</p>
-<h3 id="缓存优化"><a href="#缓存优化" class="headerlink" title="缓存优化"></a>缓存优化</h3><p>引入缓存无非是为了减轻后端数据库服务的压力，防止其”罢工”。</p>
-<p>常见的缓存服务有：Ehcache、OsCache、MemCache、Redis，它们都是主流经得起考验的缓存技术实现，特别是 Redis 已大规模运用于分布式集群服务中，并证明了自己优越的性能。</p>
-<h3 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h3><p>异步通知：比如短信验证，邮件验证这些非实时反馈性的逻辑操作。</p>
-<p><img src="/2017/11/25/java-web/9.png" alt=""></p>
-<p>流量削锋：应该是消息队列中的常用场景，一般在秒杀或团抢活动中使用广泛。</p>
-<p>日志处理：系统中的日志是必不可少的，但是如何去处理高并发下的日志却是一个技术活，一不小心可能会压垮整个服务。</p>
-<p>工作中我们常用到的开源日志 ELK，为嘛中间会加一个 Kafka 或者 Redis 就是这么一个道理(一群人涌入和排队进的区别)。</p>
-<p>消息通讯：点对点通信(个人对个人)或发布订阅模式(聊天室)。</p>
-<h3 id="日志服务"><a href="#日志服务" class="headerlink" title="日志服务"></a>日志服务</h3><p>消息队列中提到的 ELK 开源日志组件对于中小型创业公司是一个不错的选择。</p>
-<p><img src="/2017/11/25/java-web/10.png" alt=""></p>
-<h3 id="安全优化"><a href="#安全优化" class="headerlink" title="安全优化"></a>安全优化</h3><p>以上种种，没有安全做保证，一切都会归于零：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">阿里云的 VPN 虚拟专有网络以及安全组配置。</span><br><span class="line">自建机房的话，要自行配置防火墙安全策略。</span><br><span class="line">相关服务访问，比如 MySQL、Redis、Solr 等如果没有特殊需求尽量使用内网访问并设置鉴权。</span><br><span class="line">尽量使用代理服务器，不要对外开放过多的端口。</span><br><span class="line">HTTPS 配合 HTTP/2.0 也是个不错的选择。</span><br></pre></td></tr></table></figure></p>
-<h3 id="架构师必备词汇"><a href="#架构师必备词汇" class="headerlink" title="架构师必备词汇"></a>架构师必备词汇</h3><p><strong>01 高可用</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">负载均衡（负载均衡算法）</span><br><span class="line">反向代理</span><br><span class="line">服务隔离</span><br><span class="line">服务限流</span><br><span class="line">服务降级（自动优雅降级）</span><br><span class="line">失效转移</span><br><span class="line">超时重试（代理超时、容器超时、前端超时、中间件超时、数据库超时、NoSql超时）</span><br><span class="line">回滚机制（上线回滚、数据库版本回滚、事务回滚）</span><br></pre></td></tr></table></figure></p>
-<p><strong>02 高并发</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">应用缓存</span><br><span class="line">HTTP 缓存</span><br><span class="line">多级缓存</span><br><span class="line">分布式缓存</span><br><span class="line">连接池</span><br><span class="line">异步并发</span><br></pre></td></tr></table></figure></p>
-<p><strong>03 分布式事务</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">二阶段提交(强一致)</span><br><span class="line">三阶段提交(强一致)</span><br><span class="line">消息中间件(最终一致性)，推荐阿里的 RocketMQ。</span><br></pre></td></tr></table></figure></p>
-<p><img src="/2017/11/25/java-web/11.png" alt=""></p>
-<p><strong>04 队列</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">任务队列</span><br><span class="line">消息队列</span><br><span class="line">请求队列</span><br></pre></td></tr></table></figure></p>
-<p><strong>05扩容</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">单体垂直扩容</span><br><span class="line">单体水平扩容</span><br><span class="line">应用拆分</span><br><span class="line">数据库拆分</span><br><span class="line">数据库分库分表</span><br><span class="line">数据异构</span><br><span class="line">分布式任务</span><br></pre></td></tr></table></figure></p>
-<p><strong>06 网络安全</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SQL 注入</span><br><span class="line">XSS 攻击</span><br><span class="line">CSRF 攻击</span><br><span class="line">拒绝服务（DoS，Denial　of　Service）攻击</span><br></pre></td></tr></table></figure></p>
-<h3 id="架构师必备工具"><a href="#架构师必备工具" class="headerlink" title="架构师必备工具"></a>架构师必备工具</h3><p><strong>01 操作系统</strong></p>
-<p>Linux（必备）、某软的</p>
-<p><strong>02 负载均衡</strong></p>
-<p>DNS、F5、LVS、Nginx、OpenResty、HAproxy、负载均衡SLB</p>
-<p><strong>03 分布式框架</strong></p>
-<p>Dubbo、Motan、Spring-Could</p>
-<p><strong>04 数据库中间件</strong></p>
-<p>DRDS 、Mycat、360 Atlas、Cobar (不维护了)</p>
-<p><strong>05 消息队列</strong></p>
-<p>RabbitMQ、ZeroMQ、Redis、ActiveMQ、Kafka</p>
-<p><strong>06 注册中心</strong></p>
-<p>Zookeeper、Redis</p>
-<p><strong>07 缓存</strong></p>
-<p>Redis、Oscache、Memcache、Ehcache</p>
-<p><strong>08 集成部署</strong></p>
-<p>Docker、Jenkins、Git、Maven</p>
-<p><strong>09 存储</strong></p>
-<p>OSS、NFS、FastDFS、MogileFS</p>
-<p><strong>10 数据库</strong></p>
-<p>MySQL、Redis、MongoDB、PostgreSQL、Memcache、HBase</p>
-<p><strong>11 网络</strong></p>
-<p>专用网络 VPC、弹性公网 IP、CDN</p>
-<p>来源：<a href="https://cloud.tencent.com/community/article/212056" target="_blank" rel="external">https://cloud.tencent.com/community/article/212056</a></p>
+          初始搭建最开始，就是各种框架一搭，然后扔到 Tomcat 容器中跑，这时候我们的文件、数据库、应用都在一个服务器上。
 
-          
+服务分离随着系统的上线，用户量也会逐步上升，很快一台服务器已经满足不了系统的负载，这时我们就要在服务器还没有超载时，提前做好准备。
+由于我们是单体架构，优化架构在短时间内是不现实的
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/11/25/java-web/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1408,38 +1210,15 @@
       
         
           
-            <h3 id="一、so的热升级尝试"><a href="#一、so的热升级尝试" class="headerlink" title="一、so的热升级尝试"></a>一、so的热升级尝试</h3><p>在Android代码中，加载so库是通过调用System.loadLibrary函数实现的。但和Android的许多特性一样，只提供了加载，而没有卸载和更换等功能。为了研究能否实现卸载和升级等功能，首先要了解清楚JNI so加载的流程。网上有很多加载流程的解析，例如<a href="http://blog.csdn.net/luoshengyang/article/details/8923483" target="_blank" rel="external">《Dalvik虚拟机JNI方法的注册过程分析》</a>这篇文章中分析出的流程：</p>
-<p><img src="/2017/11/23/android-so/1.jpeg" alt=""></p>
-<p>在以上流程中，使用dlopen加载so之后，会继续调用JNI_Onload函数，通过系统提供的RegisterNatives函数完成一些列初始化，向虚拟机注册so库提供的JNI函数。So库也可以不实现JNI_Onload函数，而是采用自动查找的方式。</p>
-<p>Android虚拟机会在首次调用JNI函数时按照JNI规范的命名规则自动查找。通过分析Android代码，这种方法最终也会调用到上图中的dvmSetNativeFunc等函数，将函数地址保存到虚拟机中供下次调用。</p>
-<h3 id="二、卸载及重新加载"><a href="#二、卸载及重新加载" class="headerlink" title="二、卸载及重新加载"></a>二、卸载及重新加载</h3><p>如果想要提供热升级的能力，首先要做的是关闭已打开的so文件。但Android虚拟机没有提供unloadLibrary这样的接口，因此需要我们自己自己实现。</p>
-<p>根据上一节的分析，loadLibrary在native层加载文件使用的是dlopen，与之对应的系统接口是dlclose。而接下来的RegisterNatives由于没有对应的unRegister，我们暂且先放一放，看看卸载的效果再来处理。</p>
-<h4 id="卸载so"><a href="#卸载so" class="headerlink" title="卸载so"></a>卸载so</h4><p>提供卸载能力的接口需要完成以下几项任务：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1、找到要卸载so的句柄；</span><br><span class="line"></span><br><span class="line">2、调用JNI_OnUnload；</span><br><span class="line"></span><br><span class="line">3、调用dlclose卸载。</span><br></pre></td></tr></table></figure></p>
-<p>如下便是我们写出的卸载函数：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> JNICALL <span class="title">Java_com_example_Unloader_unload</span><span class="params">(JNIEnv* env, jobject obj)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span>* handle = dlopen(“/data/data/com.example.unloader/lib/libtest.so”, RTLD_GLOBAL);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!handle) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">LOGD(“unload so: <span class="number">0</span>x%x\n”, (<span class="keyword">unsigned</span> <span class="keyword">int</span>)handle);</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span>* symbol = dlsym(handle, “JNI_OnUnload”);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(symbol)</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">OnLoadFunc func = (OnLoadFunc)symbol;</span><br><span class="line"></span><br><span class="line">JavaVM* jvm = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">(*env)-&gt;GetJavaVM(env, &amp;jvm);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(jvm)</span><br><span class="line"></span><br><span class="line">(*func)(jvm, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> result = dlclose(handle);</span><br><span class="line"></span><br><span class="line">LOGD(“unload result %d\n”, result);</span><br><span class="line"></span><br><span class="line">result = dlclose(handle);</span><br><span class="line"></span><br><span class="line">result = dlclose(handle);</span><br><span class="line"></span><br><span class="line">LOGD(“unload result %d\n”, result);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>其中dlclose调用了2次，因为函数内的dlopen会增加handle的引用计数。</p>
-<p>卸载之后如果我们先尝试调用原来的JNI函数，会发生什么事呢？显而易见会出现crash。</p>
-<p><img src="/2017/11/23/android-so/2.jpeg" alt=""></p>
-<p>究其原因，是由于so在加载或使用时已经在虚拟机中注册了JNI函数的地址，卸载后原地址变为非法地址，导致crash。那我们再重新加载so会发生什么呢？</p>
-<h4 id="重新加载so"><a href="#重新加载so" class="headerlink" title="重新加载so"></a>重新加载so</h4><p>分析代码可得知，由于so已经使用System.loadLibrary加载过，我们之前在卸载时也没有触及到JNI层，因此重复调用loadLibrary并不会重新加载so。我们可以按照dvmLoadNativeCode的流程，在native层用dlopen重新加载so。</p>
-<p>按照之前的分析，很容易就能写出加载函数：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> JNICALL <span class="title">Java_com_example_Unloader_load</span><span class="params">(JNIEnv* env, jobject obj)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span>* handle = dlopen(“/data/data/com.example.Unloader/lib/libtest.so”, RTLD_GLOBAL);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!handle) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">LOGD(“load so: <span class="number">0</span>x%x\n”, (<span class="keyword">unsigned</span> <span class="keyword">int</span>)handle);</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span>* symbol = dlsym(handle, “JNI_OnLoad”);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(symbol)</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">OnLoadFunc func = (OnLoadFunc)symbol;</span><br><span class="line"></span><br><span class="line">JavaVM* jvm = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">(*env)-&gt;GetJavaVM(env, &amp;jvm);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(jvm)</span><br><span class="line"></span><br><span class="line">(*func)(jvm, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="三、问题及解决"><a href="#三、问题及解决" class="headerlink" title="三、问题及解决"></a>三、问题及解决</h3><p>重新加载so后，再次调用原来的JNI函数。发现有时候会成功，但有时候也会crash。经过追踪后注意到，报错的函数地址和卸载前一样，但so加载的地址变化了。</p>
-<p><img src="/2017/11/23/android-so/3.png" alt=""></p>
-<p>由于dlopen加载so时，并不能保证每次都加载在同一地址上。即使能够加载到同一地址，如果升级造成so文件变化，那函数地址也是不准确的。所以要使新的so工作，那我们也必须要设法更新虚拟机已经保存的函数指针，将其指向新加载so的正确地址。</p>
-<p>这时候就需要我们之前忽略的RegisterNatives登场了，这个函数可以用来手动注册JNI函数地址。让我们重复与第一节文字相似但含义不同的这段话：</p>
-<p>在以上流程中，so库在使用dlopen加载后，还需要调用JNI_Onload函数，通过系统提供的RegisterNatives函数完成一些列初始化，向虚拟机注册新的JNI函数地址。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> JNINativeMethod gMethods[] = &#123;</span><br><span class="line">&#123; “foo”, “()V”, (<span class="keyword">void</span>*)Java_com_tencent_example_foo &#125;,</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Register several native methods for one class.</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">registerNativeMethods</span><span class="params">(JNIEnv* env, <span class="keyword">const</span> <span class="keyword">char</span>* className,</span></span></span><br><span class="line"><span class="function"><span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">JNINativeMethod* gMethods, <span class="keyword">int</span> numMethods)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">jclass clazz = (*env)-&gt;FindClass(env, className);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (clazz == <span class="literal">NULL</span>) &#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> JNI_FALSE;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> ((*env)-&gt;RegisterNatives(env, clazz, gMethods, numMethods) &lt; <span class="number">0</span>) &#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> JNI_FALSE;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> JNI_TRUE;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>使用RegisterNatives注册后，即使so的地址发生变化，也能够更新虚拟机中记录的函数地址。</p>
-<p><img src="/2017/11/23/android-so/4.png" alt=""></p>
-<h3 id="本篇小结"><a href="#本篇小结" class="headerlink" title="本篇小结"></a>本篇小结</h3><p>如果想要在运行时更新so，则新的so文件必须要实现JNI_Onload函数，并且在JNI_Onload中调用系统提供的RegisterNatives注册所有的JNI函数，不能使用自动查找JNI函数名的方式。</p>
-<h3 id="四、其他问题"><a href="#四、其他问题" class="headerlink" title="四、其他问题"></a>四、其他问题</h3><p>以上方案主要解决了so的卸载，重加载和JNI函数调用问题。但除了这些问题之外，so代码的细节上还有许多要注意的地方。</p>
-<h4 id="CRASH"><a href="#CRASH" class="headerlink" title="CRASH"></a>CRASH</h4><p>卸载so后，除了JNI函数的指针，其它指向so地址的指针也都会失效，包括指向静态变量，常量，native函数的指针等。所有引用到该so地址的指针都需要更新。</p>
-<h4 id="内存和资源泄漏"><a href="#内存和资源泄漏" class="headerlink" title="内存和资源泄漏"></a>内存和资源泄漏</h4><p>native代码中可能存在各种分配内存和资源的行为，使用以上方法更新so前，如果没有仔细处理这些资源，就会丢失原指针，造成内存泄漏。</p>
-<p>1、malloc/mmap/shmem等方式分配的内存。</p>
-<p>2、socket, pipe, mutex, thread等各种系统资源。</p>
-<p>3、使用NewGlobalRef分配并持有Java对象，丢失指针后会造成虚拟机的Java内存泄漏。</p>
-<p>综上所述，对于所有可能丢失，造成泄露的资源，必须在卸载so前设法保存或删除。这些工作可以在卸载时调用的JNI_OnUnload中完成。</p>
-<p>来源：<a href="https://www.tuicool.com/articles/aAbUz2Q" target="_blank" rel="external">https://www.tuicool.com/articles/aAbUz2Q</a></p>
-
-          
+          一、so的热升级尝试在Android代码中，加载so库是通过调用System.loadLibrary函数实现的。但和Android的许多特性一样，只提供了加载，而没有卸载和更换等功能。为了研究能否实现卸载和升级等功能，首先要了解清楚JNI so加载的流程。网上有很多加载流程的解析，例如《Dalvik
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/11/23/android-so/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1595,49 +1374,16 @@
       
         
           
-            <h3 id="Image-Loader-一般拿来加载哪些图片？"><a href="#Image-Loader-一般拿来加载哪些图片？" class="headerlink" title="Image Loader 一般拿来加载哪些图片？"></a>Image Loader 一般拿来加载哪些图片？</h3><p>不管是早期的 Universal-Image-Loader，还是后来的 Picasso，Glide 以及 Fresco，它们都是很优秀的图片加载库，我们可以很轻松地通过它们来加载各种网络图片<code>（http://, https://）</code>，甚至是从</p>
-<p>应用 <code>Resource（android.resource://）</code></p>
-<p>应用 <code>Asset（file://android_asset/）</code></p>
-<p>本地文件<code>（file:///）</code></p>
-<p>本地多媒体库<code>（content://）</code></p>
-<p>加载图片。</p>
-<p>但是，Image Loader 的作用绝不止于此。</p>
-<h3 id="Image-Loader-还可以用来加载哪些图片？"><a href="#Image-Loader-还可以用来加载哪些图片？" class="headerlink" title="Image Loader 还可以用来加载哪些图片？"></a>Image Loader 还可以用来加载哪些图片？</h3><ul>
-<li><p>系统已安装动态壁纸的缩略图</p>
-</li>
-<li><p>系统已安装应用的图标</p>
-</li>
-<li><p>系统已安装应用里的图片资源</p>
-</li>
-<li><p>未安装 apk 文件的图标</p>
-</li>
-<li><p>未安装 apk 文件里的图片资源</p>
-</li>
-<li><p>图片缩略图</p>
-</li>
-<li><p>视频缩略图</p>
-</li>
-<li><p>通讯录联系人头像</p>
-</li>
-</ul>
-<p>可以这么说，只要输出是图片的地方，都可以用 Image Loader 进行加载。</p>
-<h3 id="如何利用-Image-Loader-加载这些特殊图片？"><a href="#如何利用-Image-Loader-加载这些特殊图片？" class="headerlink" title="如何利用 Image Loader 加载这些特殊图片？"></a>如何利用 Image Loader 加载这些特殊图片？</h3><p>一种通用思路是，既然 Image Loader 根据 URL 来加载各种网络图片或本地图片，而它们的 schema 一般都不一样，如网络图片的 schema 是 http 和 https，本地文件的 schema 是 file，那我们可以通过构造自定义 schema 的 URL，来指代不同类型（来源）的图片，只要配置 Image Loader 使其能从这些自定义 schema 的 URL 中识别并加载图片，后续就可以像加载普通图片一样方便地加载这些特殊图片了。</p>
-<p>具体步骤如下。</p>
-<h4 id="1-设计图片-URL-的格式"><a href="#1-设计图片-URL-的格式" class="headerlink" title="1. 设计图片 URL 的格式"></a>1. 设计图片 URL 的格式</h4><p>举个例子，比如我们在开发一个应用管理软件，需要在列表中显示系统已安装应用的图标，我们可以用 <code>&quot;application://com.elvishew.sampleapp/10&quot;</code> 表示包名为 com.elvishew.sampleapp、版本号为 10 的应用的缩略图。</p>
-<p>又比如我们在开发一个文件管理器，需要显示 apk 文件的应用图标，我们可以用 <code>&quot;apk:///sdcard/sample.apk#1470000000000&quot;</code> 表示存放在 /sdcard 路径下、名为 sample.apk、最后修改时间戳为 1470000000000 的 apk 文件的应用图标。</p>
-<p>以上有个小细节，我们把那些可能会影响加载结果的因素，如应用程序的版本号、apk 文件的最后修改时间戳，加入到 URL 中。这样一来，一旦这些影响因素变了，URL 也会跟着改变，Image Loader 就会视它们为不同的图片，而不去使用错误的缓存。</p>
-<h4 id="2-配置-Image-Loader，让其可以从自定义格式的-URL-中加载图片"><a href="#2-配置-Image-Loader，让其可以从自定义格式的-URL-中加载图片" class="headerlink" title="2. 配置 Image Loader，让其可以从自定义格式的 URL 中加载图片"></a>2. 配置 Image Loader，让其可以从自定义格式的 URL 中加载图片</h4><p>首先，定义特殊图片的 schema。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 系统已安装应用的图标 schema</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String URL_SCHEMA_APPLICATION = <span class="string">"application"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// apk 文件的应用图标 schema</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String URL_SCHEMA_APK = <span class="string">"apk"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 省略其他 schema</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
-<p>其次，自定义 Downloader（Universal-Image-Loader） 或 RequestHandler（Picasso），在应用初始化时配置 Image Loader。</p>
-<h4 id="Universal-Image-Loader："><a href="#Universal-Image-Loader：" class="headerlink" title="Universal-Image-Loader："></a>Universal-Image-Loader：</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 自定义 Downloader</span></span><br><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomImageDownloader</span> <span class="keyword">extends</span> <span class="title">BaseImageDownloader</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 省略部分代码</span></span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> InputStream <span class="title">getStreamFromOtherSource</span><span class="params">(String imageUri, Object extra)</span></span></span><br><span class="line"><span class="function">      <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    InputStream is = <span class="keyword">null</span>;</span><br><span class="line">    Uri uri = Uri.parse(imageUri);</span><br><span class="line">    <span class="keyword">if</span> (URL_SCHEMA_APPLICATION.equals(uri.getScheme())) &#123;</span><br><span class="line">      String packageName = uri.getHost();</span><br><span class="line">      is = getApplicationIconInputStream(packageName);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (URL_SCHEMA_APK.equals(uri.getScheme())) &#123;</span><br><span class="line">      String apkPath = uri.getAuthority();</span><br><span class="line">      is = getApkIconInputStream(apkPath);</span><br><span class="line">    &#125;</span><br><span class="line">    ... <span class="comment">// 省略其他分支代码</span></span><br><span class="line">    <span class="keyword">return</span> is;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 配置 Universal-Image-Loader</span></span><br><span class="line">ImageLoaderConfiguration.Builder configBuilder = <span class="keyword">new</span> ImageLoaderConfiguration.Builder(context)</span><br><span class="line">      .imageDownloader(<span class="keyword">new</span> CustomImageDownloader())</span><br><span class="line">      ... <span class="comment">// 省略其他配置代码</span></span><br><span class="line"></span><br><span class="line">ImageLoader.getInstance().init(configBuilder.build());</span><br></pre></td></tr></table></figure>
-<h4 id="Picasso："><a href="#Picasso：" class="headerlink" title="Picasso："></a>Picasso：</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 自定义 RequestHandler</span></span><br><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomRequestHandler</span> <span class="keyword">extends</span> <span class="title">RequestHandler</span> </span>&#123;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canHandleRequest</span><span class="params">(Request data)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> URL_SCHEMA_APPLICATION.equals(data.uri.getScheme())</span><br><span class="line">        || URL_SCHEMA_APK.equals(data.uri.getScheme())</span><br><span class="line">        || ... <span class="comment">/* 省略其他 schema 的检查 */</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Result <span class="title">load</span><span class="params">(Request request, <span class="keyword">int</span> networkPolicy)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    Uri uri = request.uri;</span><br><span class="line">    InputStream is = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (URL_SCHEMA_APPLICATION.equals(uri.getScheme())) &#123;</span><br><span class="line">      String packageName = uri.getHost();</span><br><span class="line">      <span class="keyword">int</span> versionCode = uri.getPort();</span><br><span class="line">      is = getApplicationIconInputStream(packageName, versionCode);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (URL_SCHEMA_APK.equals(uri.getScheme())) &#123;</span><br><span class="line">      String apkPath = uri.getAuthority();</span><br><span class="line">      is = getApkIconInputStream(apkPath);</span><br><span class="line">    &#125;</span><br><span class="line">    ... <span class="comment">// 省略其他分支代码</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Result(is, Picasso.LoadedFrom.DISK);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 配置 Picasso</span></span><br><span class="line">mPicasso = <span class="keyword">new</span> Picasso.Builder(context)</span><br><span class="line">    .addRequestHandler(<span class="keyword">new</span> CustomRequestHandler())</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
-<h4 id="3-组装图片-URL"><a href="#3-组装图片-URL" class="headerlink" title="3. 组装图片 URL"></a>3. 组装图片 URL</h4><p>以加载 /sdcard/sample.apk 这个 apk 文件的应用图标为例，假设它的最后修改时间戳为 1470000000000，我们可以组装得到 URL <code>&quot;apk:///sdcard/sample.apk#1470000000000&quot;</code>。</p>
-<h4 id="4-使用组装的-URL-加载图片"><a href="#4-使用组装的-URL-加载图片" class="headerlink" title="4. 使用组装的 URL 加载图片"></a>4. 使用组装的 URL 加载图片</h4><p>Universal-Image-Loader：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ImageLoader.getInstance().displayImage(uri, imageView);</span><br></pre></td></tr></table></figure>
-<p>Picasso：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mPicasso.load(uri).into(imageView);</span><br></pre></td></tr></table></figure>
-<p>来源：<a href="http://www.jianshu.com/p/95fc589678ed" target="_blank" rel="external">http://www.jianshu.com/p/95fc589678ed</a></p>
-
-          
+          Image Loader 一般拿来加载哪些图片？不管是早期的 Universal-Image-Loader，还是后来的 Picasso，Glide 以及 Fresco，它们都是很优秀的图片加载库，我们可以很轻松地通过它们来加载各种网络图片（http://, https://），甚至是从
+应用 Res
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/11/23/imageloader/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1805,17 +1551,15 @@
       
         
           
-            <h3 id="观察者模式："><a href="#观察者模式：" class="headerlink" title="观察者模式："></a>观察者模式：</h3><p>　　也可以称为为 发布-订阅 模式，主要适用于多个对象依赖某一个对象的状态并，当某对象状态发生改变时，要通知其他依赖对象做出更新。是一种1对多的关系。当然，如果依赖的对象只有一个时也是一种特殊的一对一关系。通常，观察者模式适用于消息事件处理，监听者监听到事件时通知事件处理者对事件进行处理（这一点上面有点像是回调，容易与反应器模式和前摄器模式的回调搞混淆）。</p>
-<h3 id="Reactor模式："><a href="#Reactor模式：" class="headerlink" title="Reactor模式："></a>Reactor模式：</h3><p>　　reactor模式，即反应器模式，是一种高效的异步IO模式，特征是 回调，当IO完成时，回调对应的函数进行处理。这种模式并非是真正的异步，而是运用了异步的思想，当io事件触发时，通知应用程序作出IO处理。模式本身并不调用系统的异步io函数。</p>
-<h3 id="Proactor模式："><a href="#Proactor模式：" class="headerlink" title="Proactor模式："></a>Proactor模式：</h3><p>　　Proactor模式，即前摄器模式，也是一种高效的异步IO模式，特征也是回调，当IO事件完成时，回调对应的函数对完成事件作出处理。这种模式是真正意义上的异步，属于系统级的异步，通常要调用系统提供的异步IO函数进行IO处理。</p>
-<h3 id="Reactor模式和Proactor模式之间的区别："><a href="#Reactor模式和Proactor模式之间的区别：" class="headerlink" title="Reactor模式和Proactor模式之间的区别："></a>Reactor模式和Proactor模式之间的区别：</h3><p>　　Reacor模式不调用系统异步IO函数,是一种仿异步。而Proactor是系统层面上的真正的异步，调用系统提供的异步IO函数。</p>
-<p>举个例子，以网络IO为例：当我们从套接字读取数据</p>
-<p>　　1.如果是Reactor模式，那么，反应器会通知我们 “可以读取数据了”，然后调用回调函数，利用recv函数从套接字读取数据，类似于MFC中的CSocket,在我们重写OnRecieve时，内部要调用Recv函数从套接字读取数据。</p>
-<p>　　2.如果是Proactor模式，那么会先调用WSARecv函数注册读事件，反应器会通知我们 “数据已经读取了”，回调函数触发时，数据已经被接收到事先提供的缓冲区中，整个IO过程是由操作系统完成的，而不需要我们自己调用recv函数来读取数据，直接在事先提供的缓冲区取数据就可以了。(备注：Linux多路复用IO,直接将数据拷贝到指定位置，通知线程已经处理完可以直接使用)</p>
-<h3 id="观察者模式和Recactor模式，Proactor模式的主要区别："><a href="#观察者模式和Recactor模式，Proactor模式的主要区别：" class="headerlink" title="观察者模式和Recactor模式，Proactor模式的主要区别："></a>观察者模式和Recactor模式，Proactor模式的主要区别：</h3><p>　　观察者模式，也叫发布-订阅模式，主要是适用于对象间一对多的依赖关系，通常用作消息分发和处理。而Reactor模式和Proactor模式主要用于高效的io模式，明显的特征是“回调”思想的运用，提高效率，避免没有必要的耗时的等待，与对象间的依赖关系无关。</p>
-<p>来源：<a href="https://www.cnblogs.com/knight-monkey/p/Monkey_blog_201507142101.html" target="_blank" rel="external">https://www.cnblogs.com/knight-monkey/p/Monkey_blog_201507142101.html</a></p>
-
-          
+          观察者模式：　　也可以称为为 发布-订阅 模式，主要适用于多个对象依赖某一个对象的状态并，当某对象状态发生改变时，要通知其他依赖对象做出更新。是一种1对多的关系。当然，如果依赖的对象只有一个时也是一种特殊的一对一关系。通常，观察者模式适用于消息事件处理，监听者监听到事件时通知事件处理者对事件进行处理
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/11/22/reactor/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1983,57 +1727,19 @@
       
         
           
-            <p>服务器端编程经常需要构造高性能的IO模型，<strong>常见的IO模型有四种</strong>：</p>
-<ul>
-<li><p>（1）同步阻塞IO（Blocking IO）：即传统的IO模型。</p>
-</li>
-<li><p>（2）同步非阻塞IO（Non-blocking IO）：默认创建的socket都是阻塞的，非阻塞IO要求socket被设置为NONBLOCK。注意这里所说的NIO并非Java的NIO（New IO）库。</p>
-</li>
-<li><p>（3）IO多路复用（IO Multiplexing）：即经典的Reactor设计模式，有时也称为异步阻塞IO，Java中的Selector和Linux中的epoll都是这种模型。</p>
-</li>
-<li><p>（4）异步IO（Asynchronous IO）：即经典的Proactor设计模式，也称为异步非阻塞IO。</p>
-</li>
-</ul>
-<p><strong>同步和异步的概念描述的是用户线程与内核的交互方式</strong>：同步是指用户线程发起IO请求后需要等待或者轮询内核IO操作完成后才能继续执行；而异步是指用户线程发起IO请求后仍继续执行，当内核IO操作完成后会通知用户线程，或者调用用户线程注册的回调函数。</p>
-<p><strong>阻塞和非阻塞的概念描述的是用户线程调用内核IO操作的方式</strong>：阻塞是指IO操作需要彻底完成后才返回到用户空间；而非阻塞是指IO操作被调用后立即返回给用户一个状态值，无需等到IO操作彻底完成。</p>
-<p>另外，Richard Stevens 在《Unix 网络编程》卷1中提到的基于信号驱动的IO（Signal Driven IO）模型，由于该模型并不常用，本文不作涉及。接下来，我们详细分析四种常见的IO模型的实现原理。为了方便描述，我们统一使用IO的读操作作为示例。</p>
-<h3 id="一、同步阻塞IO"><a href="#一、同步阻塞IO" class="headerlink" title="一、同步阻塞IO"></a>一、同步阻塞IO</h3><p>同步阻塞IO模型是最简单的IO模型，用户线程在内核进行IO操作时被阻塞。</p>
-<p><img src="/2017/11/22/io-model/1.png" alt=""><br>图1 同步阻塞IO</p>
-<p>如图1所示，用户线程通过系统调用read发起IO读操作，由用户空间转到内核空间。内核等到数据包到达后，然后将接收的数据拷贝到用户空间，完成read操作。</p>
-<p>用户线程使用同步阻塞IO模型的伪代码描述为：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">read(socket, buffer);</span><br><span class="line">process(buffer);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>即用户需要等待read将socket中的数据读取到buffer后，才继续处理接收的数据。整个IO请求的过程中，用户线程是被阻塞的，这导致用户在发起IO请求时，不能做任何事情，对CPU的资源利用率不够。</p>
-<h3 id="二、同步非阻塞IO"><a href="#二、同步非阻塞IO" class="headerlink" title="二、同步非阻塞IO"></a>二、同步非阻塞IO</h3><p>同步非阻塞IO是在同步阻塞IO的基础上，将socket设置为NONBLOCK。这样做用户线程可以在发起IO请求后可以立即返回。</p>
-<p><img src="/2017/11/22/io-model/2.png" alt=""><br>图2 同步非阻塞IO</p>
-<p>如图2所示，由于socket是非阻塞的方式，因此用户线程发起IO请求时立即返回。但并未读取到任何数据，用户线程需要不断地发起IO请求，直到数据到达后，才真正读取到数据，继续执行。</p>
-<p>用户线程使用同步非阻塞IO模型的伪代码描述为：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line"><span class="keyword">while</span>(read(socket, buffer) != SUCCESS)</span><br><span class="line">;</span><br><span class="line">process(buffer);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>即用户需要不断地调用read，尝试读取socket中的数据，直到读取成功后，才继续处理接收的数据。整个IO请求的过程中，虽然用户线程每次发起IO请求后可以立即返回，但是为了等到数据，仍需要不断地轮询、重复请求，消耗了大量的CPU的资源。一般很少直接使用这种模型，而是在其他IO模型中使用非阻塞IO这一特性。</p>
-<h3 id="三、IO多路复用"><a href="#三、IO多路复用" class="headerlink" title="三、IO多路复用"></a>三、IO多路复用</h3><p>IO多路复用模型是建立在内核提供的多路分离函数select基础之上的，使用select函数可以避免同步非阻塞IO模型中轮询等待的问题。</p>
-<p><img src="/2017/11/22/io-model/3.png" alt=""><br>图3 多路分离函数select</p>
-<p>如图3所示，用户首先将需要进行IO操作的socket添加到select中，然后阻塞等待select系统调用返回。当数据到达时，socket被激活，select函数返回。用户线程正式发起read请求，读取数据并继续执行。</p>
-<p>从流程上来看，使用select函数进行IO请求和同步阻塞模型没有太大的区别，甚至还多了添加监视socket，以及调用select函数的额外操作，效率更差。但是，使用select以后最大的优势是用户可以在一个线程内同时处理多个socket的IO请求。用户可以注册多个socket，然后不断地调用select读取被激活的socket，<strong>即可达到在同一个线程内同时处理多个IO请求的目的</strong>。而在同步阻塞模型中，必须通过多线程的方式才能达到这个目的。<br>用户线程使用select函数的伪代码描述为：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">select(socket);</span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">sockets = select();</span><br><span class="line"><span class="keyword">for</span>(socket in sockets) &#123;</span><br><span class="line"><span class="keyword">if</span>(can_read(socket)) &#123;</span><br><span class="line">read(socket, buffer);</span><br><span class="line">process(buffer);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>其中while循环前将socket添加到select监视中，然后在while内一直调用select获取被激活的socket，一旦socket可读，便调用read函数将socket中的数据读取出来。</p>
-<p>然而，使用select函数的优点并不仅限于此。虽然上述方式允许单线程内处理多个IO请求，但是每个IO请求的过程还是阻塞的（在select函数上阻塞），平均时间甚至比同步阻塞IO模型还要长。如果用户线程只注册自己感兴趣的socket或者IO请求，然后去做自己的事情，等到数据到来时再进行处理，则可以提高CPU的利用率。</p>
-<p>IO多路复用模型使用了Reactor设计模式实现了这一机制。</p>
-<p><img src="/2017/11/22/io-model/4.png" alt=""><br>图4 Reactor设计模式</p>
-<p>如图4所示，EventHandler抽象类表示IO事件处理器，它拥有IO文件句柄Handle（通过get_handle获取），以及对Handle的操作handle_event（读/写等）。继承于EventHandler的子类可以对事件处理器的行为进行定制。Reactor类用于管理EventHandler（注册、删除等），并使用handle_events实现事件循环，不断调用同步事件多路分离器（一般是内核）的多路分离函数select，只要某个文件句柄被激活（可读/写等），select就返回（阻塞），handle_events就会调用与文件句柄关联的事件处理器的handle_event进行相关操作。</p>
-<p><img src="/2017/11/22/io-model/5.png" alt=""><br>图5 IO多路复用</p>
-<p>如图5所示，通过Reactor的方式，可以将用户线程轮询IO操作状态的工作统一交给handle_events事件循环进行处理。用户线程注册事件处理器之后可以继续执行做其他的工作（异步），而Reactor线程负责调用内核的select函数检查socket状态。当有socket被激活时，则通知相应的用户线程（或执行用户线程的回调函数），执行handle_event进行数据读取、处理的工作。由于select函数是阻塞的，因此多路IO复用模型也被称为异步阻塞IO模型。注意，这里的所说的阻塞是指select函数执行时线程被阻塞，而不是指socket。一般在使用IO多路复用模型时，socket都是设置为NONBLOCK的，不过这并不会产生影响，因为用户发起IO请求时，数据已经到达了，用户线程一定不会被阻塞。</p>
-<p>用户线程使用IO多路复用模型的伪代码描述为：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> UserEventHandler::handle_event() &#123;</span><br><span class="line"><span class="keyword">if</span>(can_read(socket)) &#123;</span><br><span class="line">read(socket, buffer);</span><br><span class="line">process(buffer);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">Reactor.<span class="keyword">register</span>(<span class="keyword">new</span> UserEventHandler(socket));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>用户需要重写EventHandler的handle_event函数进行读取数据、处理数据的工作，用户线程只需要将自己的EventHandler注册到Reactor即可。Reactor中handle_events事件循环的伪代码大致如下。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Reactor::handle_events() &#123;</span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">sockets = select();</span><br><span class="line"><span class="keyword">for</span>(socket in sockets) &#123;</span><br><span class="line">get_event_handler(socket).handle_event();</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>事件循环不断地调用select获取被激活的socket，然后根据获取socket对应的EventHandler，执行器handle_event函数即可。</p>
-<p><strong>IO多路复用是最常使用的IO模型，但是其异步程度还不够“彻底”，因为它使用了会阻塞线程的select系统调用。因此IO多路复用只能称为异步阻塞IO，而非真正的异步IO</strong>。</p>
-<h3 id="四、异步IO"><a href="#四、异步IO" class="headerlink" title="四、异步IO"></a>四、异步IO</h3><p>“真正”的异步IO需要操作系统更强的支持。在IO多路复用模型中，事件循环将文件句柄的状态事件通知给用户线程，由用户线程自行读取数据、处理数据。而在异步IO模型中，当用户线程收到通知时，数据已经被内核读取完毕，并放在了用户线程指定的缓冲区内，内核在IO完成后通知用户线程直接使用即可。</p>
-<p>异步IO模型使用了Proactor设计模式实现了这一机制。</p>
-<p><img src="/2017/11/22/io-model/6.png" alt=""><br>图6 Proactor设计模式</p>
-<p>如图6，Proactor模式和Reactor模式在结构上比较相似，不过在用户（Client）使用方式上差别较大。Reactor模式中，用户线程通过向Reactor对象注册感兴趣的事件监听，然后事件触发时调用事件处理函数。而Proactor模式中，用户线程将AsynchronousOperation（读/写等）、Proactor以及操作完成时的CompletionHandler注册到AsynchronousOperationProcessor。AsynchronousOperationProcessor使用Facade模式提供了一组异步操作API（读/写等）供用户使用，当用户线程调用异步API后，便继续执行自己的任务。AsynchronousOperationProcessor 会开启独立的内核线程执行异步操作，实现真正的异步。当异步IO操作完成时，AsynchronousOperationProcessor将用户线程与AsynchronousOperation一起注册的Proactor和CompletionHandler取出，然后将CompletionHandler与IO操作的结果数据一起转发给Proactor，Proactor负责回调每一个异步操作的事件完成处理函数handle_event。虽然Proactor模式中每个异步操作都可以绑定一个Proactor对象，但是一般在操作系统中，Proactor被实现为Singleton模式，以便于集中化分发操作完成事件。</p>
-<p><img src="/2017/11/22/io-model/7.png" alt=""><br>图7 异步IO</p>
-<p>如图7所示，异步IO模型中，用户线程直接使用内核提供的异步IO API发起read请求，且发起后立即返回，继续执行用户线程代码。不过此时用户线程已经将调用的AsynchronousOperation和CompletionHandler注册到内核，然后操作系统开启独立的内核线程去处理IO操作。当read请求的数据到达时，由内核负责读取socket中的数据，并写入用户指定的缓冲区中。最后内核将read的数据和用户线程注册的CompletionHandler分发给内部Proactor，Proactor将IO完成的信息通知给用户线程（一般通过调用用户线程注册的完成事件处理函数），完成异步IO。</p>
-<p>用户线程使用异步IO模型的伪代码描述为：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> UserCompletionHandler::handle_event(buffer) &#123;</span><br><span class="line">process(buffer);</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">aio_read(socket, <span class="keyword">new</span> UserCompletionHandler);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>用户需要重写CompletionHandler的handle_event函数进行处理数据的工作，参数buffer表示Proactor已经准备好的数据，用户线程直接调用内核提供的异步IO API，并将重写的CompletionHandler注册即可。</p>
-<p>相比于IO多路复用模型，异步IO并不十分常用，不少高性能并发服务程序使用IO多路复用模型+多线程任务处理的架构基本可以满足需求。况且目前操作系统对异步IO的支持并非特别完善，更多的是采用IO多路复用模型模拟异步IO的方式（IO事件触发时不直接通知用户线程，而是将数据读写完毕后放到用户指定的缓冲区中）。Java7之后已经支持了异步IO，感兴趣的读者可以尝试使用。</p>
-<p>来源：<a href="http://www.cnblogs.com/fanzhidongyzby/p/4098546.html" target="_blank" rel="external">http://www.cnblogs.com/fanzhidongyzby/p/4098546.html</a></p>
+          服务器端编程经常需要构造高性能的IO模型，常见的IO模型有四种：
 
-          
+（1）同步阻塞IO（Blocking IO）：即传统的IO模型。
+
+（2）同步非阻塞IO（Non-blocking IO）：默认创建的socket都是阻塞的，非阻塞IO要求socket被设置为NONBLOCK。注意这里所说的NIO并
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/11/22/io-model/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -2189,136 +1895,25 @@
       
         
           
-            <p><a href="https://zhuanlan.zhihu.com/p/31202053" target="_blank" rel="external">Nginx快速入门之配置篇</a></p>
-<p><img src="/2017/11/21/nginx-principle/1.png" alt=""></p>
-<h3 id="Nginx-主要特点"><a href="#Nginx-主要特点" class="headerlink" title="Nginx 主要特点"></a>Nginx 主要特点</h3><h4 id="nginx模块结构："><a href="#nginx模块结构：" class="headerlink" title="nginx模块结构："></a>nginx模块结构：</h4><p><img src="/2017/11/21/nginx-principle/2.jpg" alt=""></p>
-<ul>
-<li><p>Nginx主要是用于Http服务器，反向代理服务器，邮件服务器</p>
-</li>
-<li><p>Nginx由多个模块组成，每个请求的完成都是由一个或多个模块共同完成的</p>
-</li>
-<li><p>Nginx 默认采用守护模式启动，守护模式让master进程启动后在后台运行</p>
-</li>
-<li><p>在Nginx运行期间主要由一个master主进程和多个worker进程（数目一般与cpu数目相同）</p>
-</li>
-</ul>
-<h4 id="master主进程主要是管理worker进程，对网络事件进行收集和分发："><a href="#master主进程主要是管理worker进程，对网络事件进行收集和分发：" class="headerlink" title="master主进程主要是管理worker进程，对网络事件进行收集和分发："></a>master主进程主要是管理worker进程，对网络事件进行收集和分发：</h4><ul>
-<li><p>接收来自外界的信号</p>
-</li>
-<li><p>向各worker进程发送信号</p>
-</li>
-<li><p>监控worker进程的运行状态，当worker进程退出后(异常情况下)，会自动重新启动新的worker进程</p>
-</li>
-</ul>
-<h4 id="nginx用一个独立的worker进程来处理一个请求，一个worker进程可以处理多个请求："><a href="#nginx用一个独立的worker进程来处理一个请求，一个worker进程可以处理多个请求：" class="headerlink" title="nginx用一个独立的worker进程来处理一个请求，一个worker进程可以处理多个请求："></a>nginx用一个独立的worker进程来处理一个请求，一个worker进程可以处理多个请求：</h4><ul>
-<li><p>当一个worker进程在accept这个连接之后，就开始读取请求，解析请求，处理请求，产生数据后，再返回给客户端，最后才断开连接。</p>
-</li>
-<li><p>一个请求，完全由worker进程来处理，而且只在一个worker进程中处理。采用这种方式的好处：</p>
-<ul>
-<li><p>节省锁带来的开销。对于每个worker进程来说，独立的进程，不需要加锁，所以省掉了锁带来的开销，同时在编程以及问题查上时，也会方便很多</p>
-</li>
-<li><p>独立进程，减少风险。</p>
-</li>
-<li><p>采用独立的进程，可以让互相之间不会影响，一个进程退出后，其它进程还在工作，服务不会中断，master进程则很快重新启动新的worker进程。</p>
-</li>
-<li><p>在一次请求里无需进程切换</p>
-</li>
-</ul>
-</li>
-</ul>
-<p><img src="/2017/11/21/nginx-principle/3.jpg" alt=""></p>
-<ul>
-<li><p>Nginx主要通过加锁来解决惊群现象</p>
-<ul>
-<li><p>惊群现象：惊群效应就是当一个fd的事件被触发时，所有等待这个fd的线程或进程都被唤醒。一般都是socket的accept()会导致惊群，很多个进程都block在server socket的accept()，一但有客户端进来，所有进程的accept()都会返回，但是只有一个进程会读到数据，就是惊群。</p>
-</li>
-<li><p>Nginx 采用accept-mutex来解决惊群问题：当一个请求到达的时候，只有竞争到锁的worker进程才会惊醒处理请求，其他进程会继续等待，结合 timer_solution 配置的最大的超时时间继续尝试获取accept-mutex</p>
-</li>
-</ul>
-</li>
-<li><p>Nginx的IO通常使用epoll，epoll函数使用了I/O复用模型。与I/O阻塞模型比较，I/O复用模型的优势在于可以同时等待多个（而不只是一个）套接字描述符就绪。Nginx的epoll工作流程如下：</p>
-<ul>
-<li><p>master进程先建好需要listen的socket后，然后再fork出多个woker进程，这样每个work进程都可以去accept这个socket</p>
-</li>
-<li><p>当一个client连接到来时，所有accept的work进程都会受到通知，但只有一个进程可以accept成功，其它的则会accept失败，Nginx提供了一把共享锁accept_mutex来保证同一时刻只有一个work进程在accept连接，从而解决惊群问题</p>
-</li>
-<li><p>当一个worker进程accept这个连接后，就开始读取请求，解析请求，处理请求，产生数据后，再返回给客户端，最后才断开连接，这样一个完成的请求就结束了</p>
-</li>
-</ul>
-</li>
-<li><p>Nginx最大连接数：</p>
-<ul>
-<li><p>worker_processes：worker角色的进程个数</p>
-</li>
-<li><p>worker_connections：每一个worker进程能并发处理（发起）的最大连接数（包含所有连接数）</p>
-</li>
-<li><p>Nginx作为http服务器的时候：max_clients = worker_processes * worker_connections</p>
-</li>
-<li><p>Nginx作为反向代理服务器的时候：max_clients = worker_processes * worker_connections/4 （/4原因：因为浏览器默认会开启2个连接到nginx server，而且nginx还会为每个连接使用fds（file descriptor）从连接池建立connection到upstream后端。）</p>
-</li>
-</ul>
-</li>
-<li><p>Nginx主要通过nginx.conf文件进行配置使用。在nginx.conf文件中主要分为：</p>
-<ul>
-<li><p>全局块：一些全局的属性，在运行时与具体业务功能（比如http服务或者email服务代理）无关的一些参数，比如工作进程数，运行的身份等</p>
-</li>
-<li><p>event块：参考事件模型，单个进程最大连接数等</p>
-</li>
-<li><p>http块：设定http服务器</p>
-</li>
-<li><p>server块：配置虚拟主机</p>
-</li>
-<li><p>location块：配置请求路由及页面的处理情况等</p>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="Nginx-常用功能"><a href="#Nginx-常用功能" class="headerlink" title="Nginx 常用功能"></a>Nginx 常用功能</h3><ul>
-<li>Nginx支持FastCGI、SSL、Virtual Host、URL Rewrite、Gzip等功能。并且支持很多第三方的模块扩展。</li>
-</ul>
-<h4 id="Nginx作为Http代理、反向代理："><a href="#Nginx作为Http代理、反向代理：" class="headerlink" title="Nginx作为Http代理、反向代理："></a>Nginx作为Http代理、反向代理：</h4><ul>
-<li><p>Nginx通过配置实现灵活的转发功能：Nginx可以根据不同的正则匹配，采取不同的转发策略。</p>
-</li>
-<li><p>Nginx可以对返回结果进行错误页跳转，异常判断等。</p>
-</li>
-<li><p>如果被分发的服务器存在异常，它可以将请求重新转发给另外一台服务器，然后自动去除异常服务器。</p>
-</li>
-</ul>
-<p><img src="/2017/11/21/nginx-principle/4.jpg" alt=""></p>
-<h4 id="Nginx作为负载均衡器："><a href="#Nginx作为负载均衡器：" class="headerlink" title="Nginx作为负载均衡器："></a>Nginx作为负载均衡器：</h4><ul>
-<li><p>Nginx提供的负载均衡策略有2种：内置策略和扩展策略。</p>
-</li>
-<li><p>内置策略为轮询，加权轮询，Ip hash。</p>
-</li>
-<li><p>扩展策略由第三方实现。</p>
-</li>
-<li><p>轮询与加权轮询：</p>
-</li>
-</ul>
-<p><img src="/2017/11/21/nginx-principle/5.jpg" alt=""></p>
-<ul>
-<li>Ip hash算法，对客户端请求的ip进行hash操作，然后根据hash结果将同一个客户端ip的请求分发给同一台服务器进行处理，可以解决session不共享的问题。</li>
-</ul>
-<p><img src="/2017/11/21/nginx-principle/6.jpg" alt=""></p>
-<h4 id="Nginx作为Web缓存"><a href="#Nginx作为Web缓存" class="headerlink" title="Nginx作为Web缓存"></a>Nginx作为Web缓存</h4><ul>
-<li><p>可以把静态资源放在Nginx服务器上（比如前端页面资源）</p>
-</li>
-<li><p>Nginx可以对不同的文件做不同的缓存处理，配置灵活。</p>
-</li>
-<li><p>配合着第三方的ngx_cache_purge，对指定的URL缓存内容可以的进行增删管理。</p>
-</li>
-</ul>
-<h3 id="Nginx-基本使用"><a href="#Nginx-基本使用" class="headerlink" title="Nginx 基本使用"></a>Nginx 基本使用</h3><p>1、安装Nginx：（安装教程网上很多，这里就不展开了）</p>
-<p>2、配置Nginx：修改nginx.conf文件</p>
-<p>3、使用Nginx命令启动Nginx：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">sudo nginx 启动Nginx</span><br><span class="line"></span><br><span class="line">nginx -s stop 快速关闭Nginx，可能不保存相关信息，并迅速终止web服务。</span><br><span class="line"></span><br><span class="line">nginx -s quit 平稳关闭Nginx，保存相关信息，有安排的结束web服务。</span><br><span class="line"></span><br><span class="line">nginx -s reload 因改变了Nginx相关配置，需要重新加载配置而重载。</span><br><span class="line"></span><br><span class="line">nginx -s reopen 重新打开日志文件。</span><br><span class="line"></span><br><span class="line">nginx -c filename 为 Nginx 指定一个配置文件，来代替缺省的。</span><br><span class="line"></span><br><span class="line">nginx -t 不运行，而仅仅测试配置文件。Nginx 将检查配置文件的语法的正确性，并尝试打开配置文件中所引用到的文件。</span><br><span class="line"></span><br><span class="line">nginx -v 显示 Nginx 的版本。</span><br><span class="line"></span><br><span class="line">nginx -V 显示 Nginx 的版本，编译器版本和配置参数。</span><br><span class="line"></span><br><span class="line">-s：把信号发给Nginx的master进程</span><br></pre></td></tr></table></figure>
-<h4 id="参考资源："><a href="#参考资源：" class="headerlink" title="参考资源："></a>参考资源：</h4><p><a href="http://link.zhihu.com/?target=http%3A//www.jianshu.com/p/b77482d4b670" target="_blank" rel="external">Nginx 之实现原理</a></p>
-<p><a href="https://www.zhihu.com/question/22756773" target="_blank" rel="external">什么是惊群，如何有效避免惊群?</a></p>
-<p><a href="http://link.zhihu.com/?target=http%3A//blog.csdn.net/sole_cc/article/details/52433353" target="_blank" rel="external">nginx最大并发连接数的思考：worker_processes、worker_connections、worker_rlimit_nofile</a></p>
-<p><a href="http://link.zhihu.com/?target=http%3A//www.cnblogs.com/knowledgesea/p/5175711.html" target="_blank" rel="external">Nginx配置详解</a></p>
-<p>来源：<a href="https://zhuanlan.zhihu.com/p/31196264" target="_blank" rel="external">https://zhuanlan.zhihu.com/p/31196264</a></p>
+          Nginx快速入门之配置篇
 
-          
+Nginx 主要特点nginx模块结构：
+
+Nginx主要是用于Http服务器，反向代理服务器，邮件服务器
+
+Nginx由多个模块组成，每个请求的完成都是由一个或多个模块共同完成的
+
+Nginx 默认采用守护模式启动，守护模式让master进程启动后在后台运行
+
+在Ng
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/11/21/nginx-principle/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
